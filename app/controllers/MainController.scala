@@ -3,10 +3,8 @@ package controllers
 import javax.inject._
 import akka.actor.ActorSystem
 import api.NotificationApi
-import infrastructure.pubsub.PubSubMessageBusService
 import play.api.mvc._
 
-import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
 /**
@@ -29,17 +27,8 @@ class MainController @Inject() (notificationApi: NotificationApi, cc: Controller
   implicit exec: ExecutionContext
 ) extends AbstractController(cc) {
 
-  /**
-    * Creates an Action that returns a plain text message after a delay
-    * of 1 second.
-    *
-    * The configuration in the `routes` file means that this method
-    * will be called when the application receives a `GET` request with
-    * a path of `/message`.
-    */
   def startPubSubService: Action[AnyContent] =
     Action.async {
-      println("HITTING THE API")
       notificationApi.startPubSubService.map { msg => Ok("Service Started Successfully") }
     }
 

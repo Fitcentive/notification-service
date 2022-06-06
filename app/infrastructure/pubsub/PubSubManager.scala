@@ -1,30 +1,24 @@
 package infrastructure.pubsub
 
+import domain.config.PubSubConfig
 import domain.events.EmailVerificationTokenCreatedEvent
 import infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
 import io.fitcentive.sdk.logging.AppLogger
-import services.{MessageBusService, SettingsService}
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 import scala.util.chaining.scalaUtilChainingOps
 
-@Singleton
-// todo - revert back to pubSubManager if modules work
-// todo - shutdown hooks
-class PubSubMessageBusService @Inject() (
-  override val publisher: PubSubPublisher,
-  override val subscriber: PubSubSubscriber,
-  settingsService: SettingsService
+// todo - how do we call api methods now?
+class PubSubManager(
+  publisher: PubSubPublisher,
+  subscriber: PubSubSubscriber,
+  config: PubSubConfig,
+  environment: String
 )(implicit ec: PubSubExecutionContext)
-  extends MessageBusService
-  with AppLogger {
+  extends AppLogger {
 
-  private val config = settingsService.pubSubConfig
-  private val environment = settingsService.envConfig.environment
-
-  override def init: Future[Unit] = {
+  final def initializeSubscriptions: Future[Unit] = {
     for {
       _ <- Future.sequence(config.topicsConfig.topics.map(publisher.createTopic))
       // todo - need a registry for common models

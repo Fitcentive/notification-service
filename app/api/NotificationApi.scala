@@ -2,18 +2,25 @@ package api
 
 import domain.email.{EmailContents, EmailFrom}
 import domain.errors.EmailError
-import services.{EmailService, MessageBusService}
+import infrastructure.pubsub.PubSubManager
+import services.EmailService
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-class NotificationApi @Inject() (emailService: EmailService, messageBus: MessageBusService)(implicit
+@Singleton
+class NotificationApi @Inject() (emailService: EmailService, pubSubManager: PubSubManager)(implicit
   ec: ExecutionContext
 ) {
 
+  // todo - what if this method is called multiple times? Need it to be idempotent
   def startPubSubService: Future[Unit] = {
-    println("IN THE API LAYER")
-    messageBus.init
+    pubSubManager.initializeSubscriptions
+  }
+
+  def testMethod: Future[Unit] = {
+    println("TEst string")
+    Future.unit
   }
 
   def sendEmail: Future[Either[EmailError, Unit]] = {
