@@ -29,4 +29,10 @@ libraryDependencies ++= Seq(
   guice
 )
 
+dependencyOverrides ++= Seq(
+  "com.fasterxml.jackson.core" % "jackson-core"        % "2.11.4",
+  "com.fasterxml.jackson.core" % "jackson-annotations" % "2.11.4",
+  "com.fasterxml.jackson.core" % "jackson-databind"    % "2.11.4",
+)
+
 Universal / javaOptions ++= Seq("-Dpidfile.path=/dev/null")
