@@ -17,7 +17,7 @@ trait MessageEventHandlers extends EventHandlers {
       case event: EmailVerificationTokenCreatedEvent =>
         notificationApi
           .sendEmail(event.emailId, event.token)
-          .map(handleEitherResult(_))
+          .flatMap(handleEitherResult(_))
 
       case _ =>
         Future.failed(new Exception("Unrecognized event"))

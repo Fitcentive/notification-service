@@ -1,7 +1,7 @@
 package infrastructure.pubsub
 
 import domain.config.PubSubConfig
-import domain.events.{EmailVerificationTokenCreatedEvent, EventHandlers, EventMessage}
+import domain.events.{EmailVerificationTokenCreatedEvent, EventHandlers}
 import infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
 import io.fitcentive.sdk.logging.AppLogger
