@@ -10,18 +10,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AsyncNotificationApi @Inject() (emailService: EmailService)(implicit ec: ExecutionContext) {
 
-  def testMethod: Future[Unit] = {
-    println("TEst string")
-    Future.unit
-  }
-
-  def sendEmail: Future[Either[EmailError, Unit]] = {
+  def sendEmail(emailId: String, token: String): Future[Either[EmailError, Unit]] = {
     emailService.sendEmail(
       EmailContents(
-        from = EmailFrom("test", "test@new.com"),
-        to = "email@address.com",
-        subject = "Test Email Subject",
-        body = "This is the first ever email"
+        from = EmailFrom("Fitcentive", "no-reply@fitcentive.io"),
+        to = emailId,
+        subject = "Email Verification Token",
+        body = s"Here is your token: ${token}"
       )
     )
   }

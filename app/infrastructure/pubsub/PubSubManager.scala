@@ -9,7 +9,6 @@ import io.fitcentive.sdk.logging.AppLogger
 import scala.concurrent.Future
 import scala.util.chaining.scalaUtilChainingOps
 
-// todo - how do we call api methods now?
 class PubSubManager(
   publisher: PubSubPublisher,
   subscriber: PubSubSubscriber,
