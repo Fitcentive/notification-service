@@ -25,11 +25,4 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 @Singleton
 class MainController @Inject() (notificationApi: NotificationApi, cc: ControllerComponents, actorSystem: ActorSystem)(
   implicit exec: ExecutionContext
-) extends AbstractController(cc) {
-
-  def startPubSubService: Action[AnyContent] =
-    Action.async {
-      notificationApi.startPubSubService.map { msg => Ok("Service Started Successfully") }
-    }
-
-}
+) extends AbstractController(cc) {}

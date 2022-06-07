@@ -1,5 +1,6 @@
 package infrastructure.pubsub
 
+import domain.EventHandlers
 import domain.config.PubSubConfig
 import domain.events.EmailVerificationTokenCreatedEvent
 import infrastructure.contexts.PubSubExecutionContext
@@ -18,6 +19,10 @@ class PubSubManager(
 )(implicit ec: PubSubExecutionContext)
   extends AppLogger {
 
+  self: EventHandlers =>
+
+  initializeSubscriptions
+
   final def initializeSubscriptions: Future[Unit] = {
     for {
       _ <- Future.sequence(config.topicsConfig.topics.map(publisher.createTopic))
@@ -31,7 +36,7 @@ class PubSubManager(
           ) {
             _.payload.pipe { event =>
               println(s"Received the event: ${event}")
-              Future.unit
+              handleEmailTokenReceived(event.message)
             }
           }
       _ = logInfo("Started listening to subscription successfully")

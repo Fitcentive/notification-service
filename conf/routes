@@ -4,6 +4,5 @@
 # ~~~~
 
 GET      /health                                            controllers.HealthController.healthCheck
-GET      /start-pubsub                                      controllers.MainController.startPubSubService
 
       
