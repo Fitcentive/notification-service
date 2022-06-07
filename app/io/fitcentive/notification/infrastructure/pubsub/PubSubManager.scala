@@ -1,6 +1,6 @@
 package io.fitcentive.notification.infrastructure.pubsub
 
-import io.fitcentive.notification.domain.config.PubSubConfig
+import io.fitcentive.notification.domain.config.AppPubSubConfig
 import io.fitcentive.notification.domain.events.{EmailVerificationTokenCreatedEvent, EventHandlers}
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
@@ -12,7 +12,7 @@ import scala.util.chaining.scalaUtilChainingOps
 class PubSubManager(
   publisher: PubSubPublisher,
   subscriber: PubSubSubscriber,
-  config: PubSubConfig,
+  config: AppPubSubConfig,
   environment: String
 )(implicit ec: PubSubExecutionContext)
   extends AppLogger {

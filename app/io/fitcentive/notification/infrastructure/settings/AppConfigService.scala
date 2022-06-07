@@ -3,15 +3,15 @@ package io.fitcentive.notification.infrastructure.settings
 import com.google.auth.Credentials
 import com.typesafe.config.Config
 import io.fitcentive.notification.domain.config.{
+  AppPubSubConfig,
   EnvironmentConfig,
-  GcpConfig,
-  PubSubConfig,
   SmtpConfig,
   SubscriptionsConfig,
   TopicsConfig
 }
 import play.api.Configuration
 import io.fitcentive.notification.services.SettingsService
+import io.fitcentive.sdk.config.{GcpConfig, PubSubConfig}
 
 import javax.inject.{Inject, Singleton}
 
@@ -27,8 +27,8 @@ class AppConfigService @Inject() (config: Configuration, gcpCredentials: Credent
   override def gcpConfig: GcpConfig =
     GcpConfig(credentials = gcpCredentials, project = config.get[String]("gcp.project"))
 
-  override def pubSubConfig: PubSubConfig =
-    PubSubConfig(
+  override def pubSubConfig: AppPubSubConfig =
+    AppPubSubConfig(
       topicsConfig = TopicsConfig.fromConfig(config.get[Config]("gcp.pubsub.topics")),
       subscriptionsConfig = SubscriptionsConfig.fromConfig(config.get[Config]("gcp.pubsub.subscriptions"))
     )
