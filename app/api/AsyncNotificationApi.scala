@@ -8,7 +8,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NotificationApi @Inject() (emailService: EmailService)(implicit ec: ExecutionContext) {
+class AsyncNotificationApi @Inject() (emailService: EmailService)(implicit ec: ExecutionContext) {
 
   def testMethod: Future[Unit] = {
     println("TEst string")

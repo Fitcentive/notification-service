@@ -1,24 +1,22 @@
 package modules.providers
 
-import api.NotificationApi
-import domain.EventHandlers
+import api.AsyncNotificationApi
 import infrastructure.contexts.PubSubExecutionContext
+import infrastructure.handlers.MessageEventHandlers
 import infrastructure.pubsub.PubSubManager
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
 import services.SettingsService
 
 import javax.inject.{Inject, Provider}
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
-class PubSubManagerProvider @Inject() (settingsService: SettingsService, notificationApi: NotificationApi)(implicit
-  ec: PubSubExecutionContext
+class PubSubManagerProvider @Inject() (settingsService: SettingsService, _notificationApi: AsyncNotificationApi)(
+  implicit ec: PubSubExecutionContext
 ) extends Provider[PubSubManager] {
 
-  trait SubscriptionEventHandlers extends EventHandlers {
-    override def handleEmailTokenReceived(token: String): Future[Unit] = {
-      println("IN HANDLE EMAIL TOKEN RECEIVED ABOUT TO CALL API METHOD")
-      notificationApi.sendEmail.map(_.map(identity))
-    }
+  trait SubscriptionEventHandlers extends MessageEventHandlers {
+    override def notificationApi: AsyncNotificationApi = _notificationApi
+    override implicit def executionContext: ExecutionContext = ec
   }
 
   override def get(): PubSubManager = {

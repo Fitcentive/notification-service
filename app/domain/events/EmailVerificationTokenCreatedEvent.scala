@@ -6,7 +6,7 @@ import io.circe.Codec
 import io.fitcentive.sdk.gcp.pubsub.PubSubMessageConverter
 import io.fitcentive.sdk.utils.PubSubOps
 
-case class EmailVerificationTokenCreatedEvent(message: String)
+case class EmailVerificationTokenCreatedEvent(emailId: String, token: String, expiry: Option[Long]) extends EventMessage
 
 object EmailVerificationTokenCreatedEvent extends PubSubOps {
 
