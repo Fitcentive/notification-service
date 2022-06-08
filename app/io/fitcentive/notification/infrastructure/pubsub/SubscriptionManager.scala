@@ -9,7 +9,7 @@ import io.fitcentive.sdk.logging.AppLogger
 import scala.concurrent.Future
 import scala.util.chaining.scalaUtilChainingOps
 
-class PubSubManager(
+class SubscriptionManager(
   publisher: PubSubPublisher,
   subscriber: PubSubSubscriber,
   config: AppPubSubConfig,
