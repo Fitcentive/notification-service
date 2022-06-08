@@ -10,9 +10,12 @@ import io.fitcentive.notification.services.SettingsService
 import javax.inject.{Inject, Provider}
 import scala.concurrent.ExecutionContext
 
-class PubSubManagerProvider @Inject() (settingsService: SettingsService, _notificationApi: AsyncNotificationApi)(
-  implicit ec: PubSubExecutionContext
-) extends Provider[PubSubManager] {
+class PubSubManagerProvider @Inject() (
+  publisher: PubSubPublisher,
+  settingsService: SettingsService,
+  _notificationApi: AsyncNotificationApi
+)(implicit ec: PubSubExecutionContext)
+  extends Provider[PubSubManager] {
 
   trait SubscriptionEventHandlers extends MessageEventHandlers {
     override def notificationApi: AsyncNotificationApi = _notificationApi
@@ -21,7 +24,7 @@ class PubSubManagerProvider @Inject() (settingsService: SettingsService, _notifi
 
   override def get(): PubSubManager = {
     new PubSubManager(
-      publisher = new PubSubPublisher(settingsService.gcpConfig.credentials, settingsService.gcpConfig.project),
+      publisher = publisher,
       subscriber = new PubSubSubscriber(settingsService.gcpConfig.credentials, settingsService.gcpConfig.project),
       config = settingsService.pubSubConfig,
       environment = settingsService.envConfig.environment
