@@ -3,6 +3,6 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET      /health                                            io.fitcentive.notification.controllers.HealthController.healthCheck
+GET      /api/notification/health                                            io.fitcentive.notification.controllers.HealthController.healthCheck
 
       
