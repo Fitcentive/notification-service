@@ -53,3 +53,7 @@ spec:
               value: ""
             - name: RUNTIME_ENVIRONMENT
               value: "local"
+            - name: TOPIC_EMAIL_VERIFICATION_TOKEN_CREATED
+              value: "email-verification-token-created"
+            - name: SUBSCRIPTION_EMAIL_VERIFICATION_TOKEN_CREATED
+              value: "email-verification-token-created"
