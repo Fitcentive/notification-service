@@ -43,6 +43,17 @@ spec:
           env:
             - name: GCP_PROJECT_NAME
               value: "fitcentive-1210"
+            - name: DB_HOST
+              # host.minikube.internal resolved IP
+              value: "192.168.64.3"
+            - name: DB_PORT
+              value: "1210"
+            - name: DB_DATABASE
+              value: "postgres"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
             - name: SMTP_HOST
               value: "mailhog"
             - name: SMTP_PORT
