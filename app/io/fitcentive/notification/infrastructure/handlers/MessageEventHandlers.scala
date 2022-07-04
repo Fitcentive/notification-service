@@ -2,7 +2,12 @@ package io.fitcentive.notification.infrastructure.handlers
 
 import io.fitcentive.notification.api.AsyncNotificationApi
 import io.fitcentive.notification.domain.errors.EmailError
-import io.fitcentive.notification.domain.events.{EmailVerificationTokenCreatedEvent, EventHandlers, EventMessage}
+import io.fitcentive.notification.domain.pubsub.events.{
+  EmailVerificationTokenCreatedEvent,
+  EventHandlers,
+  EventMessage,
+  UserFollowRequestedEvent
+}
 import io.fitcentive.sdk.error.DomainError
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -18,6 +23,11 @@ trait MessageEventHandlers extends EventHandlers {
         notificationApi
           .sendEmail(event.emailId, event.token)
           .flatMap(handleEitherResult(_))
+
+      case event: UserFollowRequestedEvent =>
+        notificationApi
+          .sendUserFollowRequestNotification(event.requestingUser, event.targetUser)
+          .map(_ => ())
 
       case _ =>
         Future.failed(new Exception("Unrecognized event"))

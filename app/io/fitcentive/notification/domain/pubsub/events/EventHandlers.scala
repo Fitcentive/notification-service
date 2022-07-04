@@ -1,4 +1,4 @@
-package io.fitcentive.notification.domain.events
+package io.fitcentive.notification.domain.pubsub.events
 
 import scala.concurrent.Future
 

@@ -57,3 +57,7 @@ spec:
               value: "email-verification-token-created"
             - name: SUBSCRIPTION_EMAIL_VERIFICATION_TOKEN_CREATED
               value: "email-verification-token-created"
+            - name: TOPIC_USER_FOLLOW_REQUESTED
+              value: "user-follow-requested"
+            - name: SUBSCRIPTION_USER_FOLLOW_REQUESTED
+              value: "user-follow-requested"
