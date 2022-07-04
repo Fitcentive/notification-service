@@ -15,7 +15,7 @@ class FirebaseModule extends AbstractModule {
       .builder()
       .setCredentials(
         GoogleCredentials
-          .fromStream(getClass.getResourceAsStream("/fitcentive-1210-firebase-adminsdk-ucirx-3c2610810a"))
+          .fromStream(getClass.getResourceAsStream("/fitcentive-1210-firebase-adminsdk-ucirx-3c2610810a.json"))
       )
       .setDatabaseUrl("https://fitcentive-1210.firebaseio.com")
       .build()
