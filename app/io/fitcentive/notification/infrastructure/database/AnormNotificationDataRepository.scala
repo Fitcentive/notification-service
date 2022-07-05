@@ -41,6 +41,7 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
           Seq(
             "id" -> notificationData.id,
             "targetUser" -> notificationData.targetUser,
+            "notificationType" -> notificationData.notificationType.stringValue,
             "isInteractive" -> notificationData.isInteractive,
             "hasBeenInteractedWith" -> notificationData.hasBeenInteractedWith,
             "jsonData" -> notificationData.data.toString(),
@@ -54,13 +55,13 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
 object AnormNotificationDataRepository {
   private val SQL_UPSERT_NOTIFICATION_DATA: String =
     """
-      |insert into notification_data (id, target_user, is_interactive, has_been_interacted_with, data, created_at, updated_at)
-      |values ({id}::uuid, {targetUser}::uuid, {isInteractive}, {hasBeenInteractedWith}, {jsonData}::jsonb, {now}, {now})
+      |insert into notification_data (id, target_user, notification_type, is_interactive, has_been_interacted_with, data, created_at, updated_at)
+      |values ({id}::uuid, {targetUser}::uuid, {notificationType}, {isInteractive}, {hasBeenInteractedWith}, {jsonData}::jsonb, {now}, {now})
       |on conflict (id)
       |do
       |update set 
       |  has_been_interacted_with={hasBeenInteractedWith},
-      |  data={jsonData}::jsonb
+      |  data={jsonData}::jsonb,
       |  updated_at={now}
       |returning * ;
       |""".stripMargin

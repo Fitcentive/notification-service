@@ -3,7 +3,7 @@ package io.fitcentive.notification.api
 import cats.data.EitherT
 import io.fitcentive.notification.domain.email.{EmailContents, EmailFrom}
 import io.fitcentive.notification.domain.errors.EmailError
-import io.fitcentive.notification.domain.notification.NotificationData
+import io.fitcentive.notification.domain.notification.{NotificationData, NotificationType}
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationResponse}
 import io.fitcentive.notification.domain.push.messages.UserFollowRequestedMessage
 import io.fitcentive.notification.services.{EmailService, PushNotificationService}
@@ -57,6 +57,7 @@ class AsyncNotificationApi @Inject() (
         id = originalNotification.id,
         targetUser = originalNotification.targetUser,
         isInteractive = originalNotification.isInteractive,
+        notificationType = originalNotification.notificationType,
         hasBeenInteractedWith = notificationData.hasBeenInteractedWith,
         data = notificationData.data
       )
@@ -73,6 +74,7 @@ class AsyncNotificationApi @Inject() (
         targetUser = targetUser,
         isInteractive = true,
         hasBeenInteractedWith = false,
+        notificationType = NotificationType.UserFollowRequest,
         data = data,
       )
       _ <- notificationDataRepository.upsertNotification(notificationData)
