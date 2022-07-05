@@ -92,7 +92,7 @@ object AnormFirebaseDeviceRepository {
       |do
       |update set 
       |  registration_token={registrationToken}, 
-      |  userId={userId}::uuid, 
+      |  user_id={userId}::uuid, 
       |  manufacturer={manufacturer}, 
       |  model={model}, 
       |  is_physical_device={isPhysicalDevice},
