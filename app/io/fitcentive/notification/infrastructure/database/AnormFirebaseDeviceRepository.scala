@@ -25,7 +25,7 @@ class AnormFirebaseDeviceRepository @Inject() (val db: Database)(implicit val db
         executeSqlWithExpectedReturn[FcmDevicesRow](
           SQL_UPSERT_DEVICE,
           Seq(
-            "token" -> device.registrationToken,
+            "registrationToken" -> device.registrationToken,
             "userId" -> device.userId,
             "manufacturer" -> device.manufacturer,
             "model" -> device.model,
@@ -43,7 +43,7 @@ class AnormFirebaseDeviceRepository @Inject() (val db: Database)(implicit val db
 
   override def deleteFcmToken(registrationToken: String): Future[Unit] =
     Future {
-      deleteRecords(SQL_DELETE_TOKEN, "token" -> registrationToken)
+      deleteRecords(SQL_DELETE_TOKEN, "registrationToken" -> registrationToken)
     }
 }
 
@@ -80,7 +80,7 @@ object AnormFirebaseDeviceRepository {
   private val SQL_DELETE_TOKEN: String =
     """
       |delete from fcm_devices
-      |where registration_token = {token} ;
+      |where registration_token = {registrationToken} ;
       |""".stripMargin
 
   private val SQL_UPSERT_DEVICE: String =
