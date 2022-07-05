@@ -3,7 +3,7 @@ package io.fitcentive.notification.services
 import com.google.inject.ImplementedBy
 import io.fitcentive.notification.domain.config.{AppPubSubConfig, EnvironmentConfig, SmtpConfig}
 import io.fitcentive.notification.infrastructure.settings.AppConfigService
-import io.fitcentive.sdk.config.GcpConfig
+import io.fitcentive.sdk.config.{GcpConfig, JwtConfig, SecretConfig}
 
 @ImplementedBy(classOf[AppConfigService])
 trait SettingsService {
@@ -11,4 +11,7 @@ trait SettingsService {
   def gcpConfig: GcpConfig
   def pubSubConfig: AppPubSubConfig
   def envConfig: EnvironmentConfig
+  def keycloakServerUrl: String
+  def jwtConfig: JwtConfig
+  def secretConfig: SecretConfig
 }
