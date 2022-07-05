@@ -5,4 +5,4 @@
 
 GET      /api/notification/health                                            io.fitcentive.notification.controllers.HealthController.healthCheck
 
-POST     /api/notification/push/:userId/devices                              io.fitcentive.notification.controllers.NotificationController.registerDevice
+POST     /api/notification/push/:userId/devices                              io.fitcentive.notification.controllers.NotificationController.registerDevice(userId: java.util.UUID)
