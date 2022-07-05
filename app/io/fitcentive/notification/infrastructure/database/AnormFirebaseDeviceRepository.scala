@@ -54,7 +54,7 @@ object AnormFirebaseDeviceRepository {
     user_id: UUID,
     manufacturer: String,
     model: String,
-    isPhysicalDevice: Boolean,
+    is_physical_device: Boolean,
     created_at: Instant,
     updated_at: Instant,
   ) {
@@ -64,7 +64,7 @@ object AnormFirebaseDeviceRepository {
         registrationToken = registration_token,
         manufacturer = manufacturer,
         model = model,
-        isPhysicalDevice = isPhysicalDevice
+        isPhysicalDevice = is_physical_device
       )
   }
 
