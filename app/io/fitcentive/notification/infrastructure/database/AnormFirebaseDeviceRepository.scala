@@ -80,8 +80,7 @@ object AnormFirebaseDeviceRepository {
   private val SQL_DELETE_TOKEN: String =
     """
       |delete from fcm_devices
-      |where registration_token = {registrationToken
-      |} ;
+      |where registration_token = {registrationToken} ;
       |""".stripMargin
 
   private val SQL_UPSERT_DEVICE: String =
