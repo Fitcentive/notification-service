@@ -17,7 +17,13 @@ trait FirebaseMessageSerialization {
       .setAndroidConfig(
         AndroidConfig
           .builder()
-          .setNotification(AndroidNotification.builder().setSound(notificationSound).setColor(appBasicTheme).build())
+          .setNotification(
+            AndroidNotification
+              .builder()
+              .setSound(notificationSound)
+              .setColor(appBasicTheme)
+              .build()
+          )
           .build()
       )
       .setApnsConfig(

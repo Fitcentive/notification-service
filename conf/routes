@@ -6,3 +6,4 @@
 GET      /api/notification/health                                            io.fitcentive.notification.controllers.HealthController.healthCheck
 
 POST     /api/notification/push/:userId/devices                              io.fitcentive.notification.controllers.NotificationController.registerDevice(userId: java.util.UUID)
+DELETE   /api/notification/push/:userId/devices                              io.fitcentive.notification.controllers.NotificationController.unregisterDevice(userId: java.util.UUID, registrationToken: String)

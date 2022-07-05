@@ -31,6 +31,9 @@ class AsyncNotificationApi @Inject() (
   def upsertDevice(device: NotificationDevice): Future[NotificationDevice] =
     notificationDeviceRepository.upsertDevice(device)
 
+  def unregisterDevice(registrationToken: String): Future[Unit] =
+    notificationDeviceRepository.deleteFcmToken(registrationToken)
+
   def sendUserFollowRequestNotification(requestingUser: UUID, targetUser: UUID): Future[PushNotificationResponse] =
     pushNotificationService.sendUserFollowRequestNotification(UserFollowRequestedMessage(requestingUser, targetUser))
 

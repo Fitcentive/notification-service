@@ -18,7 +18,6 @@ class NotificationController @Inject() (
   userAuthAction: UserAuthAction,
   internalAuthAction: InternalAuthAction,
   cc: ControllerComponents,
-  actorSystem: ActorSystem
 )(implicit exec: ExecutionContext)
   extends AbstractController(cc)
   with PlayControllerOps
@@ -32,6 +31,15 @@ class NotificationController @Inject() (
             .upsertDevice(notificationDevice)
             .map(_ => NoContent)
         }
+      }
+    }
+
+  def unregisterDevice(implicit userId: UUID, registrationToken: String): Action[AnyContent] =
+    userAuthAction.async { implicit userRequest =>
+      rejectIfNotEntitled {
+        notificationApi
+          .unregisterDevice(registrationToken)
+          .map(_ => NoContent)
       }
     }
 
