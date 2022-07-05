@@ -1,11 +1,12 @@
 package io.fitcentive.notification.controllers
 
-import akka.actor.ActorSystem
 import io.fitcentive.notification.api.AsyncNotificationApi
+import io.fitcentive.notification.domain.notification.NotificationData
 import io.fitcentive.notification.domain.push.NotificationDevice
 import io.fitcentive.notification.infrastructure.utils.ServerErrorHandler
 import io.fitcentive.sdk.play.{InternalAuthAction, UserAuthAction}
 import io.fitcentive.sdk.utils.PlayControllerOps
+import play.api.libs.json.Json
 import play.api.mvc._
 
 import java.util.UUID
@@ -22,6 +23,26 @@ class NotificationController @Inject() (
   extends AbstractController(cc)
   with PlayControllerOps
   with ServerErrorHandler {
+
+  def getUserNotifications(implicit userId: UUID): Action[AnyContent] =
+    userAuthAction.async { implicit userRequest =>
+      rejectIfNotEntitled {
+        notificationApi
+          .getUserNotifications(userId)
+          .map(notifications => Ok(Json.toJson(notifications)))
+      }
+    }
+
+  def updateUserNotification(userId: UUID, notificationId: UUID): Action[AnyContent] =
+    userAuthAction.async { implicit userRequest =>
+      rejectIfNotEntitled {
+        validateJson[NotificationData.Patch](userRequest.body.asJson) { notificationData =>
+          notificationApi
+            .upsertNotificationData(userId, notificationId, notificationData)
+            .map(handleEitherResult(_)(notification => Ok(Json.toJson(notification))))
+        }
+      }(userRequest, userId)
+    }
 
   def registerDevice(implicit userId: UUID): Action[AnyContent] =
     userAuthAction.async { implicit userRequest =>
