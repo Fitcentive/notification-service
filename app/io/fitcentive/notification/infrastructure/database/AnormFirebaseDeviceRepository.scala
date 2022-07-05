@@ -80,14 +80,15 @@ object AnormFirebaseDeviceRepository {
   private val SQL_DELETE_TOKEN: String =
     """
       |delete from fcm_devices
-      |where registration_token = {registrationToken} ;
+      |where registration_token = {registrationToken
+      |} ;
       |""".stripMargin
 
   private val SQL_UPSERT_DEVICE: String =
     """
       |insert into fcm_devices (registration_token, user_id, manufacturer, model, is_physical_device, created_at, updated_at)
       |values ({registrationToken}, {userId}::uuid, {manufacturer}, {model}, {isPhysicalDevice}, {now}, {now})
-      |on conflict (fcm_token)
+      |on conflict (registration_token)
       |do
       |update set 
       |  registration_token={registrationToken}, 
