@@ -69,7 +69,8 @@ object AnormNotificationDataRepository {
   private val SQL_GET_USER_NOTIFICATIONS: String =
     """
       |select * from notification_data
-      |where target_user = {userId}::uuid ;
+      |where target_user = {userId}::uuid 
+      |order by updated_at desc ;
       |""".stripMargin
 
   private val SQL_GET_NOTIFICATION_BY_ID: String =
