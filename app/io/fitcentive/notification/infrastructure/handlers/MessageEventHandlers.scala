@@ -6,6 +6,7 @@ import io.fitcentive.notification.domain.pubsub.events.{
   EmailVerificationTokenCreatedEvent,
   EventHandlers,
   EventMessage,
+  UserFollowRequestDecisionEvent,
   UserFollowRequestedEvent
 }
 import io.fitcentive.sdk.error.DomainError
@@ -27,6 +28,11 @@ trait MessageEventHandlers extends EventHandlers {
       case event: UserFollowRequestedEvent =>
         notificationApi
           .sendUserFollowRequestNotification(event.requestingUser, event.targetUser)
+          .map(_ => ())
+
+      case event: UserFollowRequestDecisionEvent =>
+        notificationApi
+          .updateUserFollowRequestNotificationData(event.targetUser, event.isApproved)
           .map(_ => ())
 
       case _ =>

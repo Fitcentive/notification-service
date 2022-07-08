@@ -38,7 +38,7 @@ class NotificationController @Inject() (
       rejectIfNotEntitled {
         validateJson[NotificationData.Patch](userRequest.body.asJson) { notificationData =>
           notificationApi
-            .upsertNotificationData(userId, notificationId, notificationData)
+            .updateUserNotificationData(userId, notificationId, notificationData)
             .map(handleEitherResult(_)(notification => Ok(Json.toJson(notification))))
         }
       }(userRequest, userId)

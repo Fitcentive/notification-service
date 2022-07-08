@@ -31,6 +31,7 @@ object NotificationData {
     implicit lazy val writes: Writes[Upsert] = Json.writes[Upsert]
   }
 
+  // todo - replace JsValue with case classes
   case class Patch(hasBeenInteractedWith: Boolean, data: JsValue)
   object Patch {
     implicit lazy val writes: Writes[Patch] = Json.writes[Patch]

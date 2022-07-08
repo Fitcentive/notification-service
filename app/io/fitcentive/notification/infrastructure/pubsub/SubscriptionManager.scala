@@ -6,6 +6,7 @@ import io.fitcentive.notification.infrastructure.AntiCorruptionDomain
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
 import io.fitcentive.registry.events.push.UserFollowRequested
+import io.fitcentive.registry.events.user.UserFollowRequestDecision
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
 import io.fitcentive.sdk.logging.AppLogger
 
@@ -30,6 +31,7 @@ class SubscriptionManager(
       _ <- Future.sequence(config.topicsConfig.topics.map(publisher.createTopic))
       _ <- subscribeToEmailVerificationTokenCreatedEvent
       _ <- subscribeToUserFollowRequestedEvent
+      _ <- subscribeToUserFollowRequestDecisionEvent
       _ = logInfo("Subscriptions set up successfully!")
     } yield ()
   }
@@ -48,5 +50,13 @@ class SubscriptionManager(
         environment,
         config.subscriptionsConfig.userFollowRequestedSubscription,
         config.topicsConfig.userFollowRequestedTopic
+      )(_.payload.toDomain.pipe(handleEvent))
+
+  private def subscribeToUserFollowRequestDecisionEvent: Future[Unit] =
+    subscriber
+      .subscribe[UserFollowRequestDecision](
+        environment,
+        config.subscriptionsConfig.userFollowRequestDecisionSubscription,
+        config.topicsConfig.userFollowRequestDecisionTopic
       )(_.payload.toDomain.pipe(handleEvent))
 }

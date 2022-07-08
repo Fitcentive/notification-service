@@ -33,6 +33,34 @@ class AsyncNotificationApi @Inject() (
       )
     )
 
+  def updateUserFollowRequestNotificationData(
+    targetUserId: UUID,
+    isApproved: Boolean
+  ): Future[Either[DomainError, NotificationData]] = {
+    (for {
+      mostRecentUserFollowRequestNotification <- EitherT[Future, DomainError, NotificationData](
+        notificationDataRepository
+          .getMostRecentNotificationOfTypeForUser(targetUserId, NotificationType.UserFollowRequest)
+          .map(_.map(Right.apply).getOrElse(Left(EntityNotFoundError("Notification not found!"))))
+      )
+      newData = Json.obj(
+        "requestingUser" -> (mostRecentUserFollowRequestNotification.data \ "requestingUser").get,
+        "targetUser" -> targetUserId,
+        "isApproved" -> isApproved,
+      )
+      notificationDataUpsert = NotificationData.Upsert(
+        id = mostRecentUserFollowRequestNotification.id,
+        targetUser = targetUserId,
+        isInteractive = mostRecentUserFollowRequestNotification.isInteractive,
+        notificationType = mostRecentUserFollowRequestNotification.notificationType,
+        hasBeenInteractedWith = true,
+        data = newData
+      )
+      updatedNotificationData <-
+        EitherT.right[DomainError](notificationDataRepository.upsertNotification(notificationDataUpsert))
+    } yield updatedNotificationData).value
+  }
+
   def upsertDevice(device: NotificationDevice): Future[NotificationDevice] =
     notificationDeviceRepository.upsertDevice(device)
 
@@ -42,7 +70,7 @@ class AsyncNotificationApi @Inject() (
   def getUserNotifications(userId: UUID): Future[Seq[NotificationData]] =
     notificationDataRepository.getUserNotifications(userId)
 
-  def upsertNotificationData(
+  def updateUserNotificationData(
     userId: UUID,
     notificationId: UUID,
     notificationData: NotificationData.Patch

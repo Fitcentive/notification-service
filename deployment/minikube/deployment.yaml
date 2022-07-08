@@ -70,8 +70,12 @@ spec:
               value: "email-verification-token-created"
             - name: TOPIC_USER_FOLLOW_REQUESTED
               value: "user-follow-requested"
+            - name: TOPIC_USER_FOLLOW_REQUEST_DECISION
+              value: "user-follow-request-decision"
             - name: SUBSCRIPTION_USER_FOLLOW_REQUESTED
               value: "user-follow-requested"
+            - name: SUBSCRIPTION_USER_FOLLOW_REQUEST_DECISION
+              value: "user-follow-request-decision"
             - name: INTERNAL_SERVICE_SECRET
               value: "ymmtuBE62NJRIro6eCBxl5wcIZvmKg3nSTgP2YSyjOB5fq3S0ZNFXdY1DLUBo8ji"
             - name: JWT_ISSUER

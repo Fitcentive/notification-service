@@ -50,6 +50,19 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
         )(notificationDataRowParser).toDomain
       }
     }
+
+  override def getMostRecentNotificationOfTypeForUser(
+    userId: UUID,
+    notificationType: NotificationType
+  ): Future[Option[NotificationData]] =
+    Future {
+      getRecordOpt(
+        SQL_GET_MOST_RECENT_USER_NOTIFICATION_OF_TYPE,
+        "userId" -> userId,
+        "notificationType" -> notificationType.stringValue
+      )(notificationDataRowParser).map(_.toDomain)
+    }
+
 }
 
 object AnormNotificationDataRepository {
@@ -71,6 +84,15 @@ object AnormNotificationDataRepository {
       |select * from notification_data
       |where target_user = {userId}::uuid 
       |order by updated_at desc ;
+      |""".stripMargin
+
+  private val SQL_GET_MOST_RECENT_USER_NOTIFICATION_OF_TYPE: String =
+    """
+      |select * from notification_data
+      |where target_user = {userId}::uuid
+      |and notification_type = {notificationType}
+      |order by updated_at desc 
+      |limit 1;
       |""".stripMargin
 
   private val SQL_GET_NOTIFICATION_BY_ID: String =
