@@ -26,5 +26,10 @@ case class ChatRoomMessageSentMessage(
       .build()
 
   def toJavaMap: util.Map[String, String] =
-    Seq("type" -> "chat_message", "roomId" -> roomId.toString, "targetUserId" -> targetUser.toString).toMap.asJava
+    Seq(
+      "type" -> "chat_message",
+      "roomId" -> roomId.toString,
+      "targetUserId" -> targetUser.toString,
+      "sendingUserId" -> sendingUser.toString
+    ).toMap.asJava
 }
