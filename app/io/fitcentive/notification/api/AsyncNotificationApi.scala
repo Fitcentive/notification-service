@@ -24,6 +24,9 @@ class AsyncNotificationApi @Inject() (
   userService: UserService,
 )(implicit ec: ExecutionContext) {
 
+  // todo - make this a config option
+  val imageHostBaseUrl: String = "http://api.vid.app/api/gateway/image"
+
   def sendEmail(emailId: String, token: String): Future[Either[EmailError, Unit]] =
     emailService.sendEmail(
       EmailContents(
@@ -126,7 +129,7 @@ class AsyncNotificationApi @Inject() (
         roomId = roomId,
         targetUserFirstName = targetUserProfile.firstName.getOrElse(""),
         targetUserLastName = targetUserProfile.lastName.getOrElse(""),
-        targetUserProfileImageUri = targetUserProfile.photoUrl.getOrElse(""),
+        targetUserProfileImageUri = targetUserProfile.photoUrl.map(url => s"$imageHostBaseUrl/$url").getOrElse(""),
         message = message
       )
       result <- pushNotificationService.sendChatRoomMessageSentNotification(chatMessage)
