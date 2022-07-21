@@ -5,7 +5,7 @@ import io.fitcentive.notification.domain.pubsub.events.EventHandlers
 import io.fitcentive.notification.infrastructure.AntiCorruptionDomain
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
-import io.fitcentive.registry.events.push.UserFollowRequested
+import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFollowRequested}
 import io.fitcentive.registry.events.user.UserFollowRequestDecision
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
 import io.fitcentive.sdk.logging.AppLogger
@@ -32,6 +32,7 @@ class SubscriptionManager(
       _ <- subscribeToEmailVerificationTokenCreatedEvent
       _ <- subscribeToUserFollowRequestedEvent
       _ <- subscribeToUserFollowRequestDecisionEvent
+      _ <- subscribeToChatRoomMessageSentEvent
       _ = logInfo("Subscriptions set up successfully!")
     } yield ()
   }
@@ -58,5 +59,13 @@ class SubscriptionManager(
         environment,
         config.subscriptionsConfig.userFollowRequestDecisionSubscription,
         config.topicsConfig.userFollowRequestDecisionTopic
+      )(_.payload.toDomain.pipe(handleEvent))
+
+  private def subscribeToChatRoomMessageSentEvent: Future[Unit] =
+    subscriber
+      .subscribe[ChatRoomMessageSent](
+        environment,
+        config.subscriptionsConfig.chatRoomMessageSentSubscription,
+        config.topicsConfig.chatRoomMessageSentTopic
       )(_.payload.toDomain.pipe(handleEvent))
 }

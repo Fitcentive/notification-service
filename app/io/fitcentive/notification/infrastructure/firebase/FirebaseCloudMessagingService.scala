@@ -2,7 +2,7 @@ package io.fitcentive.notification.infrastructure.firebase
 
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
-import io.fitcentive.notification.domain.push.messages.UserFollowRequestedMessage
+import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFollowRequestedMessage}
 import io.fitcentive.notification.domain.push.{
   DevicePushNotificationResponse,
   PushNotificationMessage,
@@ -26,6 +26,16 @@ class FirebaseCloudMessagingService @Inject() (
   with AppLogger {
 
   private lazy val messaging: FirebaseMessaging = FirebaseMessaging.getInstance(firebaseApp)
+
+  override def sendChatRoomMessageSentNotification(
+    chatMessage: ChatRoomMessageSentMessage
+  ): Future[PushNotificationResponse] = {
+    for {
+      deviceList <- notificationDeviceRepository.getDevicesForUser(chatMessage.targetUser)
+      deviceMessages = deviceList.map(createChatRoomMessageSent(_, chatMessage))
+      devicePushResponses <- Future.sequence(deviceMessages.map(sendDeviceMessage)).map(_.flatten.toList)
+    } yield PushNotificationResponse(chatMessage.sendingUser, devicePushResponses)
+  }
 
   override def sendUserFollowRequestNotification(
     userFollowRequest: UserFollowRequestedMessage

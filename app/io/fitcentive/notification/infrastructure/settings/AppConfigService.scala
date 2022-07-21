@@ -11,12 +11,15 @@ import io.fitcentive.notification.domain.config.{
 }
 import play.api.Configuration
 import io.fitcentive.notification.services.SettingsService
-import io.fitcentive.sdk.config.{GcpConfig, JwtConfig, PubSubConfig, SecretConfig}
+import io.fitcentive.sdk.config.{GcpConfig, JwtConfig, PubSubConfig, SecretConfig, ServerConfig}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AppConfigService @Inject() (config: Configuration, gcpCredentials: Credentials) extends SettingsService {
+
+  override def userServiceConfig: ServerConfig =
+    ServerConfig.fromConfig(config.get[Config]("services.user-service"))
 
   override def envConfig: EnvironmentConfig =
     EnvironmentConfig.fromConfig(config.get[Config]("environment"))

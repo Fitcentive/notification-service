@@ -3,6 +3,7 @@ package io.fitcentive.notification.infrastructure.handlers
 import io.fitcentive.notification.api.AsyncNotificationApi
 import io.fitcentive.notification.domain.errors.EmailError
 import io.fitcentive.notification.domain.pubsub.events.{
+  ChatRoomMessageSentEvent,
   EmailVerificationTokenCreatedEvent,
   EventHandlers,
   EventMessage,
@@ -33,6 +34,11 @@ trait MessageEventHandlers extends EventHandlers {
       case event: UserFollowRequestDecisionEvent =>
         notificationApi
           .updateUserFollowRequestNotificationData(event.targetUser, event.isApproved)
+          .map(_ => ())
+
+      case event: ChatRoomMessageSentEvent =>
+        notificationApi
+          .sendChatRoomMessageSentNotification(event.sendingUser, event.targetUser, event.roomId, event.message)
           .map(_ => ())
 
       case _ =>

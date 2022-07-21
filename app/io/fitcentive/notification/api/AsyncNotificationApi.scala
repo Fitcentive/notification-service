@@ -5,8 +5,8 @@ import io.fitcentive.notification.domain.email.{EmailContents, EmailFrom}
 import io.fitcentive.notification.domain.errors.EmailError
 import io.fitcentive.notification.domain.notification.{NotificationData, NotificationType}
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationResponse}
-import io.fitcentive.notification.domain.push.messages.UserFollowRequestedMessage
-import io.fitcentive.notification.services.{EmailService, PushNotificationService}
+import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFollowRequestedMessage}
+import io.fitcentive.notification.services.{EmailService, PushNotificationService, UserService}
 import io.fitcentive.notification.repositories.{NotificationDataRepository, NotificationDeviceRepository}
 import io.fitcentive.sdk.error.{DomainError, EntityNotFoundError}
 import play.api.libs.json.Json
@@ -21,6 +21,7 @@ class AsyncNotificationApi @Inject() (
   notificationDeviceRepository: NotificationDeviceRepository,
   notificationDataRepository: NotificationDataRepository,
   pushNotificationService: PushNotificationService,
+  userService: UserService,
 )(implicit ec: ExecutionContext) {
 
   def sendEmail(emailId: String, token: String): Future[Either[EmailError, Unit]] =
@@ -110,4 +111,25 @@ class AsyncNotificationApi @Inject() (
         UserFollowRequestedMessage(requestingUser, targetUser)
       )
     } yield result
+
+  def sendChatRoomMessageSentNotification(
+    sendingUser: UUID,
+    targetUserId: UUID,
+    roomId: UUID,
+    message: String
+  ): Future[PushNotificationResponse] = {
+    for {
+      targetUserProfile <- userService.getUserProfile(targetUserId)
+      chatMessage = ChatRoomMessageSentMessage(
+        sendingUser = sendingUser,
+        targetUser = targetUserId,
+        roomId = roomId,
+        targetUserFirstName = targetUserProfile.firstName.getOrElse(""),
+        targetUserLastName = targetUserProfile.lastName.getOrElse(""),
+        targetUserProfileImageUri = targetUserProfile.photoUrl.getOrElse(""),
+        message = message
+      )
+      result <- pushNotificationService.sendChatRoomMessageSentNotification(chatMessage)
+    } yield result
+  }
 }
