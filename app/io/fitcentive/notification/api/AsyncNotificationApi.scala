@@ -25,7 +25,7 @@ class AsyncNotificationApi @Inject() (
 )(implicit ec: ExecutionContext) {
 
   // todo - make this a config option
-  val imageHostBaseUrl: String = "http://api.vid.app/api/gateway/image"
+  val imageHostBaseUrl: String = "https://api.vid.app/api/gateway/image"
 
   def sendEmail(emailId: String, token: String): Future[Either[EmailError, Unit]] =
     emailService.sendEmail(
