@@ -7,9 +7,10 @@ import io.fitcentive.sdk.config.ServerConfig
 import play.api.libs.ws.WSClient
 
 import java.util.UUID
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class RestUserService @Inject() (wsClient: WSClient, settingsService: SettingsService)(implicit ec: ExecutionContext)
   extends UserService
   with ServiceSecretSupport {
