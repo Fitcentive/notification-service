@@ -70,7 +70,7 @@ object AnormNotificationDataRepository {
   private val SQL_UPSERT_NOTIFICATION_DATA: String =
     """
       |insert into notification_data (id, target_user, notification_type, is_interactive, has_been_interacted_with, has_been_viewed, data, created_at, updated_at)
-      |values ({id}::uuid, {targetUser}::uuid, {notificationType}, {isInteractive}, {hasBeenInteractedWith}, {hasBeenViewed} {jsonData}::jsonb, {now}, {now})
+      |values ({id}::uuid, {targetUser}::uuid, {notificationType}, {isInteractive}, {hasBeenInteractedWith}, {hasBeenViewed}, {jsonData}::jsonb, {now}, {now})
       |on conflict (id)
       |do
       |update set 
