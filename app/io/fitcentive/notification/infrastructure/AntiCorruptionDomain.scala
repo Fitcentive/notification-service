@@ -3,6 +3,7 @@ package io.fitcentive.notification.infrastructure
 import io.fitcentive.notification.domain.pubsub.events._
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
 import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFollowRequested}
+import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
 import io.fitcentive.registry.events.user.UserFollowRequestDecision
 
 trait AntiCorruptionDomain {
@@ -20,6 +21,16 @@ trait AntiCorruptionDomain {
   implicit class UserFollowRequestDecisionEvent2Domain(event: UserFollowRequestDecision) {
     def toDomain: UserFollowRequestDecisionEvent =
       UserFollowRequestDecisionEvent(event.targetUser, event.isApproved)
+  }
+
+  implicit class UserCommentedOnPostEvent2Domain(event: UserCommentedOnPost) {
+    def toDomain: UserCommentedOnPostEvent =
+      UserCommentedOnPostEvent(event.commentingUser, event.targetUser, event.postId)
+  }
+
+  implicit class UserLikedPostEvent2Domain(event: UserLikedPost) {
+    def toDomain: UserLikedPostEvent =
+      UserLikedPostEvent(event.likingUser, event.targetUser, event.postId)
   }
 
   implicit class ChatRoomMessageSentEvent2Domain(event: ChatRoomMessageSent) {

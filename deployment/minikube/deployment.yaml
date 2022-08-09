@@ -68,6 +68,10 @@ spec:
               value: "email-verification-token-created"
             - name: SUBSCRIPTION_EMAIL_VERIFICATION_TOKEN_CREATED
               value: "email-verification-token-created"
+            - name: TOPIC_USER_COMMENTED_ON_POST
+              value: "user-commented-on-post"
+            - name: TOPIC_USER_LIKED_POST
+              value: "user-liked-post"
             - name: TOPIC_CHAT_ROOM_MESSAGE_SENT
               value: "chat-room-message-sent"
             - name: TOPIC_USER_FOLLOW_REQUESTED
@@ -80,6 +84,10 @@ spec:
               value: "user-follow-requested"
             - name: SUBSCRIPTION_USER_FOLLOW_REQUEST_DECISION
               value: "user-follow-request-decision"
+            - name: SUBSCRIPTION_USER_COMMENTED_ON_POST
+              value: "user-commented-on-post"
+            - name: SUBSCRIPTION_USER_LIKED_POST
+              value: "user-liked-post"
             - name: INTERNAL_SERVICE_SECRET
               value: "ymmtuBE62NJRIro6eCBxl5wcIZvmKg3nSTgP2YSyjOB5fq3S0ZNFXdY1DLUBo8ji"
             - name: JWT_ISSUER

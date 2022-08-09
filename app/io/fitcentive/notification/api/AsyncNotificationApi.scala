@@ -135,4 +135,36 @@ class AsyncNotificationApi @Inject() (
       result <- pushNotificationService.sendChatRoomMessageSentNotification(chatMessage)
     } yield result
   }
+
+  def addUserCommentedOnPostNotification(commentingUser: UUID, targetUser: UUID, postId: UUID): Future[Unit] = {
+    for {
+      _ <- Future.unit
+      data = Json.obj("commentingUser" -> commentingUser, "targetUser" -> targetUser, "postId" -> postId)
+      notificationData = NotificationData.Upsert(
+        id = UUID.randomUUID(),
+        targetUser = targetUser,
+        isInteractive = false,
+        hasBeenInteractedWith = false,
+        notificationType = NotificationType.UserCommentedOnPost,
+        data = data,
+      )
+      _ <- notificationDataRepository.upsertNotification(notificationData)
+    } yield ()
+  }
+
+  def addUserLikedPostNotification(likingUser: UUID, targetUser: UUID, postId: UUID): Future[Unit] = {
+    for {
+      _ <- Future.unit
+      data = Json.obj("likingUser" -> likingUser, "targetUser" -> targetUser, "postId" -> postId)
+      notificationData = NotificationData.Upsert(
+        id = UUID.randomUUID(),
+        targetUser = targetUser,
+        isInteractive = false,
+        hasBeenInteractedWith = false,
+        notificationType = NotificationType.UserLikedPost,
+        data = data,
+      )
+      _ <- notificationDataRepository.upsertNotification(notificationData)
+    } yield ()
+  }
 }

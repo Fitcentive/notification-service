@@ -6,6 +6,7 @@ import io.fitcentive.notification.infrastructure.AntiCorruptionDomain
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
 import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFollowRequested}
+import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
 import io.fitcentive.registry.events.user.UserFollowRequestDecision
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
 import io.fitcentive.sdk.logging.AppLogger
@@ -33,6 +34,8 @@ class SubscriptionManager(
       _ <- subscribeToUserFollowRequestedEvent
       _ <- subscribeToUserFollowRequestDecisionEvent
       _ <- subscribeToChatRoomMessageSentEvent
+      _ <- subscribeToUserCommentedOnPostEvent
+      _ <- subscribeToUserLikedPostEvent
       _ = logInfo("Subscriptions set up successfully!")
     } yield ()
   }
@@ -67,5 +70,21 @@ class SubscriptionManager(
         environment,
         config.subscriptionsConfig.chatRoomMessageSentSubscription,
         config.topicsConfig.chatRoomMessageSentTopic
+      )(_.payload.toDomain.pipe(handleEvent))
+
+  private def subscribeToUserCommentedOnPostEvent: Future[Unit] =
+    subscriber
+      .subscribe[UserCommentedOnPost](
+        environment,
+        config.subscriptionsConfig.userCommentedOnPostSubscription,
+        config.topicsConfig.userCommentedOnPostTopic
+      )(_.payload.toDomain.pipe(handleEvent))
+
+  private def subscribeToUserLikedPostEvent: Future[Unit] =
+    subscriber
+      .subscribe[UserLikedPost](
+        environment,
+        config.subscriptionsConfig.userLikedPostSubscription,
+        config.topicsConfig.userLikedPostTopic
       )(_.payload.toDomain.pipe(handleEvent))
 }

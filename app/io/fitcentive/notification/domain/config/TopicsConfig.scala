@@ -7,6 +7,8 @@ case class TopicsConfig(
   emailVerificationTokenCreatedTopic: String,
   userFollowRequestedTopic: String,
   userFollowRequestDecisionTopic: String,
+  userCommentedOnPostTopic: String,
+  userLikedPostTopic: String,
   chatRoomMessageSentTopic: String
 ) extends PubSubTopicConfig {
 
@@ -15,7 +17,9 @@ case class TopicsConfig(
       emailVerificationTokenCreatedTopic,
       userFollowRequestedTopic,
       userFollowRequestDecisionTopic,
-      chatRoomMessageSentTopic
+      chatRoomMessageSentTopic,
+      userCommentedOnPostTopic,
+      userLikedPostTopic
     )
 
 }
@@ -26,6 +30,8 @@ object TopicsConfig {
       config.getString("email-verification-token-created"),
       config.getString("user-follow-requested"),
       config.getString("user-follow-request-decision"),
+      config.getString("user-commented-on-post"),
+      config.getString("user-liked-post"),
       config.getString("chat-room-message-sent"),
     )
 }
