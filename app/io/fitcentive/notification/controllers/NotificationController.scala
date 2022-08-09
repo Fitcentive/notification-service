@@ -2,6 +2,7 @@ package io.fitcentive.notification.controllers
 
 import io.fitcentive.notification.api.AsyncNotificationApi
 import io.fitcentive.notification.domain.notification.NotificationData
+import io.fitcentive.notification.domain.payloads.NotificationIdsPayload
 import io.fitcentive.notification.domain.push.NotificationDevice
 import io.fitcentive.notification.infrastructure.utils.ServerErrorHandler
 import io.fitcentive.sdk.play.{InternalAuthAction, UserAuthAction}
@@ -40,6 +41,17 @@ class NotificationController @Inject() (
           notificationApi
             .updateUserNotificationData(userId, notificationId, notificationData)
             .map(handleEitherResult(_)(notification => Ok(Json.toJson(notification))))
+        }
+      }(userRequest, userId)
+    }
+
+  def markNotificationsAsViewed(userId: UUID): Action[AnyContent] =
+    userAuthAction.async { implicit userRequest =>
+      rejectIfNotEntitled {
+        validateJson[NotificationIdsPayload](userRequest.body.asJson) { payload =>
+          notificationApi
+            .markNotificationsAsViewed(userId, payload.notificationIds)
+            .map(handleEitherResult(_)(_ => Ok))
         }
       }(userRequest, userId)
     }

@@ -43,6 +43,7 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
             "targetUser" -> notificationData.targetUser,
             "notificationType" -> notificationData.notificationType.stringValue,
             "isInteractive" -> notificationData.isInteractive,
+            "hasBeenViewed" -> notificationData.hasBeenViewed,
             "hasBeenInteractedWith" -> notificationData.hasBeenInteractedWith,
             "jsonData" -> notificationData.data.toString(),
             "now" -> now
@@ -68,11 +69,12 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
 object AnormNotificationDataRepository {
   private val SQL_UPSERT_NOTIFICATION_DATA: String =
     """
-      |insert into notification_data (id, target_user, notification_type, is_interactive, has_been_interacted_with, data, created_at, updated_at)
-      |values ({id}::uuid, {targetUser}::uuid, {notificationType}, {isInteractive}, {hasBeenInteractedWith}, {jsonData}::jsonb, {now}, {now})
+      |insert into notification_data (id, target_user, notification_type, is_interactive, has_been_interacted_with, has_been_viewed, data, created_at, updated_at)
+      |values ({id}::uuid, {targetUser}::uuid, {notificationType}, {isInteractive}, {hasBeenInteractedWith}, {hasBeenViewed} {jsonData}::jsonb, {now}, {now})
       |on conflict (id)
       |do
       |update set 
+      |  has_been_viewed={hasBeenViewed},
       |  has_been_interacted_with={hasBeenInteractedWith},
       |  data={jsonData}::jsonb,
       |  updated_at={now}
@@ -106,6 +108,7 @@ object AnormNotificationDataRepository {
     target_user: UUID,
     is_interactive: Boolean,
     has_been_interacted_with: Boolean,
+    has_been_viewed: Boolean,
     notification_type: String,
     data: JsValue,
     created_at: Instant,
@@ -117,6 +120,7 @@ object AnormNotificationDataRepository {
         targetUser = target_user,
         isInteractive = is_interactive,
         hasBeenInteractedWith = has_been_interacted_with,
+        hasBeenViewed = has_been_viewed,
         data = data,
         notificationType = NotificationType(notification_type),
         createdAt = created_at,

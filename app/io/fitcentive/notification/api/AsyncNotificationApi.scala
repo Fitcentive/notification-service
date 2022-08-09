@@ -1,6 +1,7 @@
 package io.fitcentive.notification.api
 
 import cats.data.EitherT
+import cats.implicits.toTraverseOps
 import io.fitcentive.notification.domain.email.{EmailContents, EmailFrom}
 import io.fitcentive.notification.domain.errors.EmailError
 import io.fitcentive.notification.domain.notification.{NotificationData, NotificationType}
@@ -58,6 +59,7 @@ class AsyncNotificationApi @Inject() (
         isInteractive = mostRecentUserFollowRequestNotification.isInteractive,
         notificationType = mostRecentUserFollowRequestNotification.notificationType,
         hasBeenInteractedWith = true,
+        hasBeenViewed = true,
         data = newData
       )
       updatedNotificationData <-
@@ -74,10 +76,40 @@ class AsyncNotificationApi @Inject() (
   def getUserNotifications(userId: UUID): Future[Seq[NotificationData]] =
     notificationDataRepository.getUserNotifications(userId)
 
+  def markNotificationsAsViewed(userId: UUID, notificationIds: Seq[UUID]): Future[Either[DomainError, Unit]] =
+    (for {
+      originalNotifications <- EitherT(
+        Future
+          .sequence(
+            notificationIds.map(
+              notificationDataRepository
+                .getNotificationById(userId, _)
+                .map(_.map(Right.apply).getOrElse(Left(EntityNotFoundError("Notification not found!"))))
+            )
+          )
+          .map(_.sequence)
+      )
+      _ <- EitherT.right[DomainError] {
+        Future
+          .sequence(originalNotifications.map { originalNotification =>
+            val notificationDataUpsert = NotificationData.Upsert(
+              id = originalNotification.id,
+              targetUser = originalNotification.targetUser,
+              isInteractive = originalNotification.isInteractive,
+              notificationType = originalNotification.notificationType,
+              hasBeenInteractedWith = originalNotification.hasBeenInteractedWith,
+              hasBeenViewed = true,
+              data = originalNotification.data
+            )
+            notificationDataRepository.upsertNotification(notificationDataUpsert)
+          })
+      }
+    } yield ()).value
+
   def updateUserNotificationData(
     userId: UUID,
     notificationId: UUID,
-    notificationData: NotificationData.Patch
+    notificationDataPatch: NotificationData.Patch
   ): Future[Either[DomainError, NotificationData]] =
     (for {
       originalNotification <- EitherT[Future, DomainError, NotificationData](
@@ -90,8 +122,9 @@ class AsyncNotificationApi @Inject() (
         targetUser = originalNotification.targetUser,
         isInteractive = originalNotification.isInteractive,
         notificationType = originalNotification.notificationType,
-        hasBeenInteractedWith = notificationData.hasBeenInteractedWith,
-        data = notificationData.data
+        hasBeenInteractedWith = notificationDataPatch.hasBeenInteractedWith,
+        hasBeenViewed = notificationDataPatch.hasBeenViewed,
+        data = notificationDataPatch.data
       )
       updatedNotificationData <-
         EitherT.right[DomainError](notificationDataRepository.upsertNotification(notificationDataUpsert))
@@ -106,6 +139,7 @@ class AsyncNotificationApi @Inject() (
         targetUser = targetUser,
         isInteractive = true,
         hasBeenInteractedWith = false,
+        hasBeenViewed = false,
         notificationType = NotificationType.UserFollowRequest,
         data = data,
       )
@@ -145,6 +179,7 @@ class AsyncNotificationApi @Inject() (
         targetUser = targetUser,
         isInteractive = false,
         hasBeenInteractedWith = false,
+        hasBeenViewed = false,
         notificationType = NotificationType.UserCommentedOnPost,
         data = data,
       )
@@ -161,6 +196,7 @@ class AsyncNotificationApi @Inject() (
         targetUser = targetUser,
         isInteractive = false,
         hasBeenInteractedWith = false,
+        hasBeenViewed = false,
         notificationType = NotificationType.UserLikedPost,
         data = data,
       )

@@ -11,6 +11,7 @@ case class NotificationData(
   notificationType: NotificationType,
   isInteractive: Boolean,
   hasBeenInteractedWith: Boolean,
+  hasBeenViewed: Boolean,
   data: JsValue,
   createdAt: Instant,
   updatedAt: Instant
@@ -25,6 +26,7 @@ object NotificationData {
     notificationType: NotificationType,
     isInteractive: Boolean,
     hasBeenInteractedWith: Boolean,
+    hasBeenViewed: Boolean,
     data: JsValue
   )
   object Upsert {
@@ -32,7 +34,7 @@ object NotificationData {
   }
 
   // todo - replace JsValue with case classes
-  case class Patch(hasBeenInteractedWith: Boolean, data: JsValue)
+  case class Patch(hasBeenInteractedWith: Boolean, hasBeenViewed: Boolean, data: JsValue)
   object Patch {
     implicit lazy val writes: Writes[Patch] = Json.writes[Patch]
     implicit lazy val reads: Reads[Patch] = Json.reads[Patch]
