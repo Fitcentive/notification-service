@@ -25,7 +25,7 @@ trait AntiCorruptionDomain {
 
   implicit class UserCommentedOnPostEvent2Domain(event: UserCommentedOnPost) {
     def toDomain: UserCommentedOnPostEvent =
-      UserCommentedOnPostEvent(event.commentingUser, event.targetUser, event.postId)
+      UserCommentedOnPostEvent(event.commentingUser, event.targetUser, event.postId, event.postCreatorId)
   }
 
   implicit class UserLikedPostEvent2Domain(event: UserLikedPost) {

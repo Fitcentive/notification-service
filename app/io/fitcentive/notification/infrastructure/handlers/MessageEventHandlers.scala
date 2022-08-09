@@ -45,7 +45,7 @@ trait MessageEventHandlers extends EventHandlers {
 
       case event: UserCommentedOnPostEvent =>
         notificationApi
-          .addUserCommentedOnPostNotification(event.commentingUser, event.targetUser, event.postId)
+          .addUserCommentedOnPostNotification(event.commentingUser, event.targetUser, event.postId, event.postCreatorId)
           .map(_ => ())
 
       case event: UserLikedPostEvent =>

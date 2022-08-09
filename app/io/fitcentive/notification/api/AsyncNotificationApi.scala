@@ -164,10 +164,20 @@ class AsyncNotificationApi @Inject() (
     } yield result
   }
 
-  def addUserCommentedOnPostNotification(commentingUser: UUID, targetUser: UUID, postId: UUID): Future[Unit] = {
+  def addUserCommentedOnPostNotification(
+    commentingUser: UUID,
+    targetUser: UUID,
+    postId: UUID,
+    postCreatorId: UUID
+  ): Future[Unit] = {
     for {
       _ <- Future.unit
-      data = Json.obj("commentingUser" -> commentingUser, "targetUser" -> targetUser, "postId" -> postId)
+      data = Json.obj(
+        "commentingUser" -> commentingUser,
+        "targetUser" -> targetUser,
+        "postId" -> postId,
+        "postCreatorId" -> postCreatorId
+      )
       notificationData = NotificationData.Upsert(
         id = UUID.randomUUID(),
         targetUser = targetUser,
