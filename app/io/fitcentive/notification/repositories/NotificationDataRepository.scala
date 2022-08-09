@@ -17,4 +17,5 @@ trait NotificationDataRepository {
   def getUserNotifications(userId: UUID): Future[Seq[NotificationData]]
   def upsertNotification(notificationData: NotificationData.Upsert): Future[NotificationData]
   def updateNotificationAsViewed(notificationId: UUID): Future[NotificationData]
+  def getUnreadNotifications(userId: UUID): Future[Seq[NotificationData]]
 }

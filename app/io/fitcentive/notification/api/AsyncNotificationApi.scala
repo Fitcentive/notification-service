@@ -76,6 +76,11 @@ class AsyncNotificationApi @Inject() (
   def getUserNotifications(userId: UUID): Future[Seq[NotificationData]] =
     notificationDataRepository.getUserNotifications(userId)
 
+  def getUnreadNotificationCount(userId: UUID): Future[Int] =
+    notificationDataRepository
+      .getUnreadNotifications(userId)
+      .map(_.size)
+
   def markNotificationsAsViewed(userId: UUID, notificationIds: Seq[UUID]): Future[Either[DomainError, Unit]] =
     (for {
       originalNotifications <- EitherT(

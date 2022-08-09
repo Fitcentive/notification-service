@@ -56,6 +56,15 @@ class NotificationController @Inject() (
       }(userRequest, userId)
     }
 
+  def getUnreadNotificationCount(userId: UUID): Action[AnyContent] =
+    userAuthAction.async { implicit userRequest =>
+      rejectIfNotEntitled {
+        notificationApi
+          .getUnreadNotificationCount(userId)
+          .map(count => Ok(Json.toJson(count)))
+      }(userRequest, userId)
+    }
+
   def registerDevice(implicit userId: UUID): Action[AnyContent] =
     userAuthAction.async { implicit userRequest =>
       rejectIfNotEntitled {
