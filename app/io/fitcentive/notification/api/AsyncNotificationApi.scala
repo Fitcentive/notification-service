@@ -89,21 +89,10 @@ class AsyncNotificationApi @Inject() (
           )
           .map(_.sequence)
       )
-      _ <- EitherT.right[DomainError] {
+      _ <- EitherT.right[DomainError](
         Future
-          .sequence(originalNotifications.map { originalNotification =>
-            val notificationDataUpsert = NotificationData.Upsert(
-              id = originalNotification.id,
-              targetUser = originalNotification.targetUser,
-              isInteractive = originalNotification.isInteractive,
-              notificationType = originalNotification.notificationType,
-              hasBeenInteractedWith = originalNotification.hasBeenInteractedWith,
-              hasBeenViewed = true,
-              data = originalNotification.data
-            )
-            notificationDataRepository.upsertNotification(notificationDataUpsert)
-          })
-      }
+          .sequence(originalNotifications.map(n => notificationDataRepository.updateNotificationAsViewed(n.id)))
+      )
     } yield ()).value
 
   def updateUserNotificationData(

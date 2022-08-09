@@ -21,6 +21,16 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
 
   import AnormNotificationDataRepository._
 
+  override def updateNotificationAsViewed(notificationId: UUID): Future[NotificationData] =
+    Future {
+      Instant.now.pipe { now =>
+        executeSqlWithExpectedReturn[NotificationDataRow](
+          SQL_UPDATE_NOTIFICATION_AS_VIEWED,
+          Seq("notificationId" -> notificationId, "hasBeenViewed" -> true)
+        )(notificationDataRowParser).toDomain
+      }
+    }
+
   override def getUserNotifications(userId: UUID): Future[Seq[NotificationData]] =
     Future {
       getRecords(SQL_GET_USER_NOTIFICATIONS, "userId" -> userId)(notificationDataRowParser).map(_.toDomain)
@@ -67,6 +77,14 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
 }
 
 object AnormNotificationDataRepository {
+  private val SQL_UPDATE_NOTIFICATION_AS_VIEWED: String =
+    """
+      |update notification_data
+      |set has_been_viewed={hasBeenViewed}
+      |where id = {notificationId}::uuid
+      |returning * ;
+      |""".stripMargin
+
   private val SQL_UPSERT_NOTIFICATION_DATA: String =
     """
       |insert into notification_data (id, target_user, notification_type, is_interactive, has_been_interacted_with, has_been_viewed, data, created_at, updated_at)
