@@ -193,7 +193,7 @@ class AsyncNotificationApi @Inject() (
               isInteractive = false,
               hasBeenInteractedWith = false,
               hasBeenViewed = false,
-              notificationType = NotificationType.UserLikedPost,
+              notificationType = NotificationType.UserCommentedOnPost,
               data = data,
             )
             notificationDataRepository.upsertNotification(notificationData)
@@ -211,7 +211,7 @@ class AsyncNotificationApi @Inject() (
               isInteractive = false,
               hasBeenInteractedWith = false,
               hasBeenViewed = false,
-              notificationType = NotificationType.UserLikedPost,
+              notificationType = NotificationType.UserCommentedOnPost,
               data = data,
             )
             notificationDataRepository.upsertNotification(notificationData)
