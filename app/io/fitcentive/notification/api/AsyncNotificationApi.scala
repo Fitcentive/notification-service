@@ -188,7 +188,7 @@ class AsyncNotificationApi @Inject() (
               "postCreatorId" -> postCreatorId
             )
             val notificationData = NotificationData.Upsert(
-              id = UUID.randomUUID(),
+              id = unreadNotification.id,
               targetUser = targetUser,
               isInteractive = false,
               hasBeenInteractedWith = false,
@@ -234,7 +234,7 @@ class AsyncNotificationApi @Inject() (
             val newLikedUsersSet: Set[String] = alreadyLikedUsersSet + likingUser.toString
             val data = Json.obj("likingUsers" -> newLikedUsersSet.toSeq, "targetUser" -> targetUser, "postId" -> postId)
             val notificationData = NotificationData.Upsert(
-              id = UUID.randomUUID(),
+              id = unreadNotification.id,
               targetUser = targetUser,
               isInteractive = false,
               hasBeenInteractedWith = false,
