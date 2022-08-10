@@ -171,40 +171,93 @@ class AsyncNotificationApi @Inject() (
     postCreatorId: UUID
   ): Future[Unit] = {
     for {
-      _ <- Future.unit
-      data = Json.obj(
-        "commentingUser" -> commentingUser,
-        "targetUser" -> targetUser,
-        "postId" -> postId,
-        "postCreatorId" -> postCreatorId
+      unreadNotificationOpt <- notificationDataRepository.getUnreadNotificationForPostWithType(
+        targetUser,
+        postId,
+        NotificationType.UserCommentedOnPost
       )
-      notificationData = NotificationData.Upsert(
-        id = UUID.randomUUID(),
-        targetUser = targetUser,
-        isInteractive = false,
-        hasBeenInteractedWith = false,
-        hasBeenViewed = false,
-        notificationType = NotificationType.UserCommentedOnPost,
-        data = data,
-      )
-      _ <- notificationDataRepository.upsertNotification(notificationData)
+      _ <- {
+        unreadNotificationOpt
+          .map { unreadNotification =>
+            val alreadyCommentedUsersSet = (unreadNotification.data \ "commentingUser").get.as[List[String]].toSet
+            val newCommentedUsersSet: Set[String] = alreadyCommentedUsersSet + commentingUser
+            val data = Json.obj(
+              "commentingUsers" -> newCommentedUsersSet.toSeq,
+              "targetUser" -> targetUser,
+              "postId" -> postId,
+              "postCreatorId" -> postCreatorId
+            )
+            val notificationData = NotificationData.Upsert(
+              id = UUID.randomUUID(),
+              targetUser = targetUser,
+              isInteractive = false,
+              hasBeenInteractedWith = false,
+              hasBeenViewed = false,
+              notificationType = NotificationType.UserLikedPost,
+              data = data,
+            )
+            notificationDataRepository.upsertNotification(notificationData)
+          }
+          .getOrElse {
+            val data = Json.obj(
+              "commentingUsers" -> Seq(commentingUser),
+              "targetUser" -> targetUser,
+              "postId" -> postId,
+              "postCreatorId" -> postCreatorId
+            )
+            val notificationData = NotificationData.Upsert(
+              id = UUID.randomUUID(),
+              targetUser = targetUser,
+              isInteractive = false,
+              hasBeenInteractedWith = false,
+              hasBeenViewed = false,
+              notificationType = NotificationType.UserLikedPost,
+              data = data,
+            )
+            notificationDataRepository.upsertNotification(notificationData)
+          }
+      }
     } yield ()
   }
 
   def addUserLikedPostNotification(likingUser: UUID, targetUser: UUID, postId: UUID): Future[Unit] = {
     for {
-      _ <- Future.unit
-      data = Json.obj("likingUser" -> likingUser, "targetUser" -> targetUser, "postId" -> postId)
-      notificationData = NotificationData.Upsert(
-        id = UUID.randomUUID(),
-        targetUser = targetUser,
-        isInteractive = false,
-        hasBeenInteractedWith = false,
-        hasBeenViewed = false,
-        notificationType = NotificationType.UserLikedPost,
-        data = data,
+      unreadNotificationOpt <- notificationDataRepository.getUnreadNotificationForPostWithType(
+        targetUser,
+        postId,
+        NotificationType.UserLikedPost
       )
-      _ <- notificationDataRepository.upsertNotification(notificationData)
+      _ <- {
+        unreadNotificationOpt
+          .map { unreadNotification =>
+            val alreadyLikedUsersSet = (unreadNotification.data \ "likingUsers").get.as[List[String]].toSet
+            val newLikedUsersSet: Set[String] = alreadyLikedUsersSet + likingUser
+            val data = Json.obj("likingUsers" -> newLikedUsersSet.toSeq, "targetUser" -> targetUser, "postId" -> postId)
+            val notificationData = NotificationData.Upsert(
+              id = UUID.randomUUID(),
+              targetUser = targetUser,
+              isInteractive = false,
+              hasBeenInteractedWith = false,
+              hasBeenViewed = false,
+              notificationType = NotificationType.UserLikedPost,
+              data = data,
+            )
+            notificationDataRepository.upsertNotification(notificationData)
+          }
+          .getOrElse {
+            val data = Json.obj("likingUsers" -> Seq(likingUser), "targetUser" -> targetUser, "postId" -> postId)
+            val notificationData = NotificationData.Upsert(
+              id = UUID.randomUUID(),
+              targetUser = targetUser,
+              isInteractive = false,
+              hasBeenInteractedWith = false,
+              hasBeenViewed = false,
+              notificationType = NotificationType.UserLikedPost,
+              data = data,
+            )
+            notificationDataRepository.upsertNotification(notificationData)
+          }
+      }
     } yield ()
   }
 }
