@@ -179,7 +179,7 @@ class AsyncNotificationApi @Inject() (
       _ <- {
         unreadNotificationOpt
           .map { unreadNotification =>
-            val alreadyCommentedUsersSet = (unreadNotification.data \ "commentingUser").get.as[List[String]].toSet
+            val alreadyCommentedUsersSet = (unreadNotification.data \ "commentingUsers").get.as[List[String]].toSet
             val newCommentedUsersSet: Set[String] = alreadyCommentedUsersSet + commentingUser.toString
             val data = Json.obj(
               "commentingUsers" -> newCommentedUsersSet.toSeq,
