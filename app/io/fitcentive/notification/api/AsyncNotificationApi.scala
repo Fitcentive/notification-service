@@ -180,7 +180,7 @@ class AsyncNotificationApi @Inject() (
         unreadNotificationOpt
           .map { unreadNotification =>
             val alreadyCommentedUsersSet = (unreadNotification.data \ "commentingUser").get.as[List[String]].toSet
-            val newCommentedUsersSet: Set[String] = alreadyCommentedUsersSet + commentingUser
+            val newCommentedUsersSet: Set[String] = alreadyCommentedUsersSet + commentingUser.toString
             val data = Json.obj(
               "commentingUsers" -> newCommentedUsersSet.toSeq,
               "targetUser" -> targetUser,
@@ -231,7 +231,7 @@ class AsyncNotificationApi @Inject() (
         unreadNotificationOpt
           .map { unreadNotification =>
             val alreadyLikedUsersSet = (unreadNotification.data \ "likingUsers").get.as[List[String]].toSet
-            val newLikedUsersSet: Set[String] = alreadyLikedUsersSet + likingUser
+            val newLikedUsersSet: Set[String] = alreadyLikedUsersSet + likingUser.toString
             val data = Json.obj("likingUsers" -> newLikedUsersSet.toSeq, "targetUser" -> targetUser, "postId" -> postId)
             val notificationData = NotificationData.Upsert(
               id = UUID.randomUUID(),
