@@ -139,7 +139,7 @@ object AnormNotificationDataRepository {
       |where target_user = {userId}::uuid
       |and has_been_viewed = false
       |and notification_type = {notificationType}
-      |and data->'postId' = {postId} ;
+      |and data::jsonb->>'postId' = {postId} ;
       |""".stripMargin
 
   private val SQL_GET_MOST_RECENT_USER_NOTIFICATION_OF_TYPE: String =
