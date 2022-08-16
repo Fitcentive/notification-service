@@ -25,11 +25,15 @@ class NotificationController @Inject() (
   with PlayControllerOps
   with ServerErrorHandler {
 
-  def getUserNotifications(implicit userId: UUID): Action[AnyContent] =
+  def getUserNotifications(implicit
+    userId: UUID,
+    limit: Option[Int] = None,
+    offset: Option[Int] = None
+  ): Action[AnyContent] =
     userAuthAction.async { implicit userRequest =>
       rejectIfNotEntitled {
         notificationApi
-          .getUserNotifications(userId)
+          .getUserNotifications(userId, limit, offset)
           .map(notifications => Ok(Json.toJson(notifications)))
       }
     }

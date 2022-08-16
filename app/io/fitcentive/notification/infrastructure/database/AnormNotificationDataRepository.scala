@@ -50,9 +50,11 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
       }
     }
 
-  override def getUserNotifications(userId: UUID): Future[Seq[NotificationData]] =
+  override def getUserNotifications(userId: UUID, limit: Int, offset: Int): Future[Seq[NotificationData]] =
     Future {
-      getRecords(SQL_GET_USER_NOTIFICATIONS, "userId" -> userId)(notificationDataRowParser).map(_.toDomain)
+      getRecords(SQL_GET_USER_NOTIFICATIONS, "userId" -> userId, "limit" -> limit, "offset" -> offset)(
+        notificationDataRowParser
+      ).map(_.toDomain)
     }
 
   override def getNotificationById(userId: UUID, notificationId: UUID): Future[Option[NotificationData]] =
@@ -122,7 +124,9 @@ object AnormNotificationDataRepository {
     """
       |select * from notification_data
       |where target_user = {userId}::uuid 
-      |order by updated_at desc ;
+      |order by updated_at desc 
+      |limit {limit} 
+      |offset {offset} ;
       |""".stripMargin
 
   private val SQL_GET_USER_UNREAD_NOTIFICATIONS: String =

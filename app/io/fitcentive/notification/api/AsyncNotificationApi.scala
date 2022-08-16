@@ -25,6 +25,9 @@ class AsyncNotificationApi @Inject() (
   userService: UserService,
 )(implicit ec: ExecutionContext) {
 
+  val defaultLimit = 50
+  val defaultOffset = 0
+
   // todo - make this a config option
   val imageHostBaseUrl: String = "https://api.vid.app/api/gateway/image"
 
@@ -73,8 +76,16 @@ class AsyncNotificationApi @Inject() (
   def unregisterDevice(registrationToken: String): Future[Unit] =
     notificationDeviceRepository.deleteFcmToken(registrationToken)
 
-  def getUserNotifications(userId: UUID): Future[Seq[NotificationData]] =
-    notificationDataRepository.getUserNotifications(userId)
+  def getUserNotifications(
+    userId: UUID,
+    limit: Option[Int] = None,
+    offset: Option[Int] = None
+  ): Future[Seq[NotificationData]] =
+    notificationDataRepository.getUserNotifications(
+      userId,
+      limit.fold(defaultLimit)(identity),
+      offset.fold(defaultOffset)(identity)
+    )
 
   def getUnreadNotificationCount(userId: UUID): Future[Int] =
     notificationDataRepository

@@ -5,7 +5,7 @@
 
 GET      /api/notification/health                                            io.fitcentive.notification.controllers.HealthController.healthCheck
 
-GET      /api/notification/:userId/notifications                             io.fitcentive.notification.controllers.NotificationController.getUserNotifications(userId: java.util.UUID)
+GET      /api/notification/:userId/notifications                             io.fitcentive.notification.controllers.NotificationController.getUserNotifications(userId: java.util.UUID, limit: Option[Int] ?= None, offset: Option[Int] ?= None)
 PUT      /api/notification/:userId/notifications/:notificationId             io.fitcentive.notification.controllers.NotificationController.updateUserNotification(userId: java.util.UUID, notificationId: java.util.UUID)
 POST     /api/notification/:userId/notifications/mark-as-viewed              io.fitcentive.notification.controllers.NotificationController.markNotificationsAsViewed(userId: java.util.UUID)
 GET      /api/notification/:userId/notifications/get-unread-count            io.fitcentive.notification.controllers.NotificationController.getUnreadNotificationCount(userId: java.util.UUID)
