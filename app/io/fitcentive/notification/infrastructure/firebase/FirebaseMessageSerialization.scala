@@ -24,6 +24,7 @@ trait FirebaseMessageSerialization {
               .setColor(appBasicTheme)
               // todo - this fails unless URL is publicly accessible
               .setImage(chatMessage.sendingUserProfileImageUri)
+              .setIcon("app_icon")
               .build()
           )
           .build()
@@ -63,6 +64,7 @@ trait FirebaseMessageSerialization {
               .setColor(appBasicTheme)
               // todo - this fails unless URL is publicly accessible
               .setImage(userFollowRequest.sendingUserProfileImageUri)
+              .setIcon("app_icon")
               .build()
           )
           .build()
