@@ -14,6 +14,7 @@ case class ChatRoomMessageSentMessage(
   targetUserFirstName: String,
   targetUserLastName: String,
   targetUserProfileImageUri: String,
+  sendingUserProfileImageUri: String,
   message: String
 ) extends PushNotificationEventMessage {
 
@@ -30,6 +31,7 @@ case class ChatRoomMessageSentMessage(
       "type" -> "chat_message",
       "roomId" -> roomId.toString,
       "targetUserId" -> targetUser.toString,
-      "sendingUserId" -> sendingUser.toString
+      "sendingUserId" -> sendingUser.toString,
+      "sendingUserPhotoUrl" -> sendingUserProfileImageUri,
     ).toMap.asJava
 }

@@ -155,20 +155,22 @@ class AsyncNotificationApi @Inject() (
     } yield result
 
   def sendChatRoomMessageSentNotification(
-    sendingUser: UUID,
+    sendingUserId: UUID,
     targetUserId: UUID,
     roomId: UUID,
     message: String
   ): Future[PushNotificationResponse] = {
     for {
       targetUserProfile <- userService.getUserProfile(targetUserId)
+      sendingUserProfile <- userService.getUserProfile(sendingUserId)
       chatMessage = ChatRoomMessageSentMessage(
-        sendingUser = sendingUser,
+        sendingUser = sendingUserId,
         targetUser = targetUserId,
         roomId = roomId,
         targetUserFirstName = targetUserProfile.firstName.getOrElse(""),
         targetUserLastName = targetUserProfile.lastName.getOrElse(""),
         targetUserProfileImageUri = targetUserProfile.photoUrl.map(url => s"$imageHostBaseUrl/$url").getOrElse(""),
+        sendingUserProfileImageUri = sendingUserProfile.photoUrl.map(url => s"$imageHostBaseUrl/$url").getOrElse(""),
         message = message
       )
       result <- pushNotificationService.sendChatRoomMessageSentNotification(chatMessage)
