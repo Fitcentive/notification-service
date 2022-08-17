@@ -20,6 +20,7 @@ case class UserFollowRequestedMessage(requestingUser: UUID, targetUser: UUID, se
     Seq(
       "type" -> "user_follow_request",
       "requestingUserId" -> requestingUser.toString,
+      "targetUserId" -> targetUser.toString,
       "requestingUserPhotoUrl" -> sendingUserProfileImageUri,
     ).toMap.asJava
 }
