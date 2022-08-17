@@ -148,9 +148,14 @@ class AsyncNotificationApi @Inject() (
         notificationType = NotificationType.UserFollowRequest,
         data = data,
       )
+      sendingUserProfile <- userService.getUserProfile(requestingUser)
       _ <- notificationDataRepository.upsertNotification(notificationData)
       result <- pushNotificationService.sendUserFollowRequestNotification(
-        UserFollowRequestedMessage(requestingUser, targetUser)
+        UserFollowRequestedMessage(
+          requestingUser,
+          targetUser,
+          sendingUserProfile.photoUrl.map(url => s"$imageHostBaseUrl/$url").getOrElse("")
+        )
       )
     } yield result
 

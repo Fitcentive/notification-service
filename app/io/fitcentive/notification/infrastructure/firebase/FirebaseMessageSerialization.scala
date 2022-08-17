@@ -22,7 +22,8 @@ trait FirebaseMessageSerialization {
               .builder()
               .setSound(notificationSound)
               .setColor(appBasicTheme)
-              .setImage(chatMessage.targetUserProfileImageUri)
+              // todo - this fails unless URL is publicly accessible
+              .setImage(chatMessage.sendingUserProfileImageUri)
               .build()
           )
           .build()
@@ -60,6 +61,8 @@ trait FirebaseMessageSerialization {
               .builder()
               .setSound(notificationSound)
               .setColor(appBasicTheme)
+              // todo - this fails unless URL is publicly accessible
+              .setImage(userFollowRequest.sendingUserProfileImageUri)
               .build()
           )
           .build()

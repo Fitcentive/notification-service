@@ -7,7 +7,8 @@ import scala.jdk.CollectionConverters._
 import java.util
 import java.util.UUID
 
-case class UserFollowRequestedMessage(requestingUser: UUID, targetUser: UUID) extends PushNotificationEventMessage {
+case class UserFollowRequestedMessage(requestingUser: UUID, targetUser: UUID, sendingUserProfileImageUri: String)
+  extends PushNotificationEventMessage {
   val notification: Notification =
     Notification
       .builder()
@@ -16,5 +17,9 @@ case class UserFollowRequestedMessage(requestingUser: UUID, targetUser: UUID) ex
       .build()
 
   def toJavaMap: util.Map[String, String] =
-    Seq("type" -> "user_follow_request").toMap.asJava
+    Seq(
+      "type" -> "user_follow_request",
+      "requestingUserId" -> requestingUser.toString,
+      "requestingUserPhotoUrl" -> sendingUserProfileImageUri,
+    ).toMap.asJava
 }
