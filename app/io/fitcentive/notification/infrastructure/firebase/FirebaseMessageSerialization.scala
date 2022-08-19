@@ -1,6 +1,14 @@
 package io.fitcentive.notification.infrastructure.firebase
 
-import com.google.firebase.messaging.{AndroidConfig, AndroidNotification, ApnsConfig, Aps, Message}
+import com.google.firebase.messaging.{
+  AndroidConfig,
+  AndroidNotification,
+  ApnsConfig,
+  ApnsFcmOptions,
+  Aps,
+  FcmOptions,
+  Message
+}
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationMessage}
 import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFollowRequestedMessage}
 
@@ -36,6 +44,14 @@ trait FirebaseMessageSerialization {
             Aps
               .builder()
               .setSound(notificationSound)
+              .setMutableContent(true)
+              .build()
+          )
+          .setFcmOptions(
+            ApnsFcmOptions
+              .builder()
+              // todo - this fails unless URL is publicly accessible
+              .setImage(chatMessage.sendingUserProfileImageUri)
               .build()
           )
           .build()
@@ -76,6 +92,14 @@ trait FirebaseMessageSerialization {
             Aps
               .builder()
               .setSound(notificationSound)
+              .setMutableContent(true)
+              .build()
+          )
+          .setFcmOptions(
+            ApnsFcmOptions
+              .builder()
+              // todo - this fails unless URL is publicly accessible
+              .setImage(userFollowRequest.sendingUserProfileImageUri)
               .build()
           )
           .build()
