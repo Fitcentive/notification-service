@@ -48,6 +48,12 @@ Note - these pre-requisites need only be done **once ever**. If you are deployin
 1. `ssh -i $(minikube -p=hyperkit ssh-key) docker@$(minikube -p=hyperkit ip) -R 1211:localhost:1211 -R 1212:localhost:1212 -R 1210:localhost:1210 -R 1213:localhost:1213`
 2. Note - Only `localhost:1211` is needed for this service, but other services' tunnels can be bundled into this one command
 
+=== 5. Install mailhog helm chart if not already done so
+1. `helm install mailhog codecentric/mailhog`
+2. Ensure SMTP config is correct or update `deployment.yaml` accordingly
+3. Access mailhog email intercept using `kubectl` port forwarding
+    - `kubectl port-forward svc/mailhog 8025:8025`
+
 '''
 
 === 1. Delete existing deployment and build fresh image
