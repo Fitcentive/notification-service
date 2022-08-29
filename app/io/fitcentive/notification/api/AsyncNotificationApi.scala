@@ -31,6 +31,15 @@ class AsyncNotificationApi @Inject() (
   // todo - make this a config option
   val imageHostBaseUrl: String = "https://api.vid.app/api/gateway/image"
 
+  // Note we have made a conscious decision here to not modify/delete notification data in which `userId` appears as a supporting field
+  // For example, in UserFollowRequest/UserLikedPost/UserCommentedOnPost notifications, we are not modifying the JSON data field
+  // The responsibility is delegated to the client app
+  def deleteUserData(userId: UUID): Future[Unit] =
+    for {
+      _ <- notificationDeviceRepository.deleteDevicesForUser(userId)
+      _ <- notificationDataRepository.deleteDataForUser(userId)
+    } yield ()
+
   def sendEmail(emailId: String, token: String): Future[Either[EmailError, Unit]] =
     emailService.sendEmail(
       EmailContents(

@@ -45,6 +45,11 @@ class AnormFirebaseDeviceRepository @Inject() (val db: Database)(implicit val db
     Future {
       deleteRecords(SQL_DELETE_TOKEN, "registrationToken" -> registrationToken)
     }
+
+  override def deleteDevicesForUser(userId: UUID): Future[Unit] =
+    Future {
+      executeSqlWithoutReturning(SQL_DELETE_DEVICES_FOR_USER, Seq("userId" -> userId))
+    }
 }
 
 object AnormFirebaseDeviceRepository {
@@ -69,6 +74,12 @@ object AnormFirebaseDeviceRepository {
   }
 
   private val fcmDeviceRowParser: RowParser[FcmDevicesRow] = Macro.namedParser[FcmDevicesRow]
+
+  private val SQL_DELETE_DEVICES_FOR_USER: String =
+    """
+      |delete from fcm_devices
+      |where user_id = {userId}::uuid ;
+      |""".stripMargin
 
   private val SQL_GET_DEVICES_FOR_USER: String =
     """

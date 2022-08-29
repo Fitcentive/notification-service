@@ -64,6 +64,11 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
       ).map(_.toDomain)
     }
 
+  override def deleteDataForUser(userId: UUID): Future[Unit] =
+    Future {
+      executeSqlWithoutReturning(SQL_DELETE_DATA_FOR_USER, Seq("userId" -> userId))
+    }
+
   override def upsertNotification(notificationData: NotificationData.Upsert): Future[NotificationData] =
     Future {
       Instant.now.pipe { now =>
@@ -98,6 +103,13 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
 }
 
 object AnormNotificationDataRepository {
+
+  private val SQL_DELETE_DATA_FOR_USER: String =
+    """
+      |delete from notification_data
+      |where target_user = {userId}::uuid
+      |""".stripMargin
+
   private val SQL_UPDATE_NOTIFICATION_AS_VIEWED: String =
     """
       |update notification_data

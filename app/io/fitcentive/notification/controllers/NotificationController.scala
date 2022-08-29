@@ -89,4 +89,11 @@ class NotificationController @Inject() (
       }
     }
 
+  def deleteUserData(userId: UUID): Action[AnyContent] =
+    internalAuthAction.async { implicit userRequest =>
+      notificationApi
+        .deleteUserData(userId)
+        .map(_ => NoContent)
+    }
+
 }

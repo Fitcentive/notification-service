@@ -9,6 +9,7 @@ import scala.concurrent.Future
 
 @ImplementedBy(classOf[AnormNotificationDataRepository])
 trait NotificationDataRepository {
+  def deleteDataForUser(userId: UUID): Future[Unit]
   def getNotificationById(userId: UUID, notificationId: UUID): Future[Option[NotificationData]]
   def getMostRecentNotificationOfTypeForUser(
     userId: UUID,

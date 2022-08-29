@@ -13,3 +13,5 @@ GET      /api/notification/:userId/notifications/get-unread-count            io.
 
 POST     /api/notification/push/:userId/devices                              io.fitcentive.notification.controllers.NotificationController.registerDevice(userId: java.util.UUID)
 DELETE   /api/notification/push/:userId/devices                              io.fitcentive.notification.controllers.NotificationController.unregisterDevice(userId: java.util.UUID, registrationToken: String)
+
+DELETE   /api/internal/notification/user/:userId                             io.fitcentive.notification.controllers.NotificationController.deleteUserData(userId: java.util.UUID)

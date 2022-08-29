@@ -16,3 +16,10 @@ spec:
                 name: notification-service
                 port:
                   number: 9000
+          - path: /api/internal/notification
+            pathType: Prefix
+            backend:
+              service:
+                name: notification-service
+                port:
+                  number: 9000

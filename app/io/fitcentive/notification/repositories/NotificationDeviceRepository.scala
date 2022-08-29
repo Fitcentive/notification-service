@@ -12,4 +12,5 @@ trait NotificationDeviceRepository {
   def upsertDevice(device: NotificationDevice): Future[NotificationDevice]
   def getDevicesForUser(userId: UUID): Future[Seq[NotificationDevice]]
   def deleteFcmToken(fcmToken: String): Future[Unit]
+  def deleteDevicesForUser(userId: UUID): Future[Unit]
 }
