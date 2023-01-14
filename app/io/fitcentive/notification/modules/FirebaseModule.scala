@@ -3,21 +3,23 @@ package io.fitcentive.notification.modules
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.{FirebaseApp, FirebaseOptions}
 import com.google.inject.{AbstractModule, Provides}
+import io.fitcentive.notification.services.SettingsService
 
+import java.io.ByteArrayInputStream
 import javax.inject.Singleton
 
 class FirebaseModule extends AbstractModule {
 
   @Provides
   @Singleton
-  def provideFirebaseOptions: FirebaseOptions =
+  def provideFirebaseOptions(settingsService: SettingsService): FirebaseOptions =
     FirebaseOptions
       .builder()
       .setCredentials(
         GoogleCredentials
-          .fromStream(getClass.getResourceAsStream("/fitcentive-1210-firebase-adminsdk-ucirx-3c2610810a.json"))
+          .fromStream(new ByteArrayInputStream(settingsService.firebaseConfig.serviceAccountCredentials.getBytes()))
       )
-      .setDatabaseUrl("https://fitcentive-1210.firebaseio.com")
+      //      .setDatabaseUrl(settingsService.firebaseConfig.databaseUrl) // seems like this is not required
       .build()
 
   @Provides

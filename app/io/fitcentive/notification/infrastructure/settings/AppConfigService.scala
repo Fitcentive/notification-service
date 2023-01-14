@@ -1,10 +1,10 @@
 package io.fitcentive.notification.infrastructure.settings
 
-import com.google.auth.Credentials
 import com.typesafe.config.Config
 import io.fitcentive.notification.domain.config.{
   AppPubSubConfig,
   EnvironmentConfig,
+  FirebaseConfig,
   SmtpConfig,
   SubscriptionsConfig,
   TopicsConfig
@@ -16,7 +16,13 @@ import io.fitcentive.sdk.config.{GcpConfig, JwtConfig, PubSubConfig, SecretConfi
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AppConfigService @Inject() (config: Configuration, gcpCredentials: Credentials) extends SettingsService {
+class AppConfigService @Inject() (config: Configuration) extends SettingsService {
+
+  override def pubSubServiceAccountStringCredentials: String =
+    config.get[String]("gcp.pubsub.service-account-string-credentials")
+
+  override def firebaseConfig: FirebaseConfig =
+    FirebaseConfig.fromConfig(config.get[Config]("gcp.firebase"))
 
   override def userServiceConfig: ServerConfig =
     ServerConfig.fromConfig(config.get[Config]("services.user-service"))
@@ -28,7 +34,7 @@ class AppConfigService @Inject() (config: Configuration, gcpCredentials: Credent
     SmtpConfig.fromConfig(config.get[Config]("smtp"))
 
   override def gcpConfig: GcpConfig =
-    GcpConfig(credentials = gcpCredentials, project = config.get[String]("gcp.project"))
+    GcpConfig(project = config.get[String]("gcp.project"))
 
   override def pubSubConfig: AppPubSubConfig =
     AppPubSubConfig(
