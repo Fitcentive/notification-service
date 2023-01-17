@@ -5,9 +5,9 @@ import io.fitcentive.notification.domain.pubsub.events.EventHandlers
 import io.fitcentive.notification.infrastructure.AntiCorruptionDomain
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
-import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFollowRequested}
+import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFriendRequested}
 import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
-import io.fitcentive.registry.events.user.UserFollowRequestDecision
+import io.fitcentive.registry.events.user.UserFriendRequestDecision
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
 import io.fitcentive.sdk.logging.AppLogger
 
@@ -31,8 +31,8 @@ class SubscriptionManager(
     for {
       _ <- Future.sequence(config.topicsConfig.topics.map(publisher.createTopic))
       _ <- subscribeToEmailVerificationTokenCreatedEvent
-      _ <- subscribeToUserFollowRequestedEvent
-      _ <- subscribeToUserFollowRequestDecisionEvent
+      _ <- subscribeToUserFriendRequestedEvent
+      _ <- subscribeToUserFriendRequestDecisionEvent
       _ <- subscribeToChatRoomMessageSentEvent
       _ <- subscribeToUserCommentedOnPostEvent
       _ <- subscribeToUserLikedPostEvent
@@ -48,20 +48,20 @@ class SubscriptionManager(
         config.topicsConfig.emailVerificationTokenCreatedTopic
       )(_.payload.toDomain.pipe(handleEvent))
 
-  private def subscribeToUserFollowRequestedEvent: Future[Unit] =
+  private def subscribeToUserFriendRequestedEvent: Future[Unit] =
     subscriber
-      .subscribe[UserFollowRequested](
+      .subscribe[UserFriendRequested](
         environment,
-        config.subscriptionsConfig.userFollowRequestedSubscription,
-        config.topicsConfig.userFollowRequestedTopic
+        config.subscriptionsConfig.userFriendRequestedSubscription,
+        config.topicsConfig.userFriendRequestedTopic
       )(_.payload.toDomain.pipe(handleEvent))
 
-  private def subscribeToUserFollowRequestDecisionEvent: Future[Unit] =
+  private def subscribeToUserFriendRequestDecisionEvent: Future[Unit] =
     subscriber
-      .subscribe[UserFollowRequestDecision](
+      .subscribe[UserFriendRequestDecision](
         environment,
-        config.subscriptionsConfig.userFollowRequestDecisionSubscription,
-        config.topicsConfig.userFollowRequestDecisionTopic
+        config.subscriptionsConfig.userFriendRequestDecisionSubscription,
+        config.topicsConfig.userFriendRequestDecisionTopic
       )(_.payload.toDomain.pipe(handleEvent))
 
   private def subscribeToChatRoomMessageSentEvent: Future[Unit] =

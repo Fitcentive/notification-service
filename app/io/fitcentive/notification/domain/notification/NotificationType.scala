@@ -10,7 +10,7 @@ object NotificationType {
 
   def apply(notificationType: String): NotificationType =
     notificationType match {
-      case UserFollowRequest.stringValue   => UserFollowRequest
+      case UserFriendRequest.stringValue   => UserFriendRequest
       case UserCommentedOnPost.stringValue => UserCommentedOnPost
       case UserLikedPost.stringValue       => UserLikedPost
       case _                               => throw new Exception("Unexpected notification type")
@@ -18,14 +18,14 @@ object NotificationType {
 
   implicit lazy val writes: Writes[NotificationType] = {
     {
-      case UserFollowRequest   => JsString(UserFollowRequest.stringValue)
+      case UserFriendRequest   => JsString(UserFriendRequest.stringValue)
       case UserCommentedOnPost => JsString(UserCommentedOnPost.stringValue)
       case UserLikedPost       => JsString(UserLikedPost.stringValue)
     }
   }
 
-  case object UserFollowRequest extends NotificationType {
-    val stringValue: String = "UserFollowRequest"
+  case object UserFriendRequest extends NotificationType {
+    val stringValue: String = "UserFriendRequest"
   }
 
   case object UserCommentedOnPost extends NotificationType {

@@ -88,16 +88,16 @@ spec:
               value: "user-liked-post"
             - name: TOPIC_CHAT_ROOM_MESSAGE_SENT
               value: "chat-room-message-sent"
-            - name: TOPIC_USER_FOLLOW_REQUESTED
-              value: "user-follow-requested"
-            - name: TOPIC_USER_FOLLOW_REQUEST_DECISION
-              value: "user-follow-request-decision"
+            - name: TOPIC_USER_FRIEND_REQUESTED
+              value: "user-friend-requested"
+            - name: TOPIC_USER_FRIEND_REQUEST_DECISION
+              value: "user-friend-request-decision"
             - name: SUBSCRIPTION_CHAT_ROOM_MESSAGE_SENT
               value: "chat-room-message-sent"
-            - name: SUBSCRIPTION_USER_FOLLOW_REQUESTED
-              value: "user-follow-requested"
-            - name: SUBSCRIPTION_USER_FOLLOW_REQUEST_DECISION
-              value: "user-follow-request-decision"
+            - name: SUBSCRIPTION_USER_FRIEND_REQUESTED
+              value: "user-friend-requested"
+            - name: SUBSCRIPTION_USER_FRIEND_REQUEST_DECISION
+              value: "user-friend-request-decision"
             - name: SUBSCRIPTION_USER_COMMENTED_ON_POST
               value: "user-commented-on-post"
             - name: SUBSCRIPTION_USER_LIKED_POST
@@ -110,6 +110,8 @@ spec:
               value: "http://user-service.user"
             - name: USER_SERVICE_PORT
               value: "9000"
+            - name: IMAGE_HOST_BASE_URL
+              value: "https://api.fitcentive.xyz/api/gateway/image"
       volumes:
         - name: cloudsql-creds
           secret:

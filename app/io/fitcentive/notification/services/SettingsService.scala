@@ -8,6 +8,7 @@ import io.fitcentive.sdk.config.{GcpConfig, JwtConfig, SecretConfig, ServerConfi
 @ImplementedBy(classOf[AppConfigService])
 trait SettingsService {
   def pubSubServiceAccountStringCredentials: String
+  def imageHostBaseUrl: String
   def firebaseConfig: FirebaseConfig
   def smtpConfig: SmtpConfig
   def gcpConfig: GcpConfig

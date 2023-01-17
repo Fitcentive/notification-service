@@ -10,7 +10,7 @@ import com.google.firebase.messaging.{
   Message
 }
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationMessage}
-import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFollowRequestedMessage}
+import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFriendRequestedMessage}
 
 trait FirebaseMessageSerialization {
   private val notificationSound = "notification1.mp3"
@@ -64,9 +64,9 @@ trait FirebaseMessageSerialization {
     PushNotificationMessage(device.registrationToken, msg)
   }
 
-  def createUserFollowRequest(
+  def createUserFriendRequest(
     device: NotificationDevice,
-    userFollowRequest: UserFollowRequestedMessage
+    userFriendRequest: UserFriendRequestedMessage
   ): PushNotificationMessage = {
     val msg = Message
       .builder()
@@ -79,7 +79,7 @@ trait FirebaseMessageSerialization {
               .setSound(notificationSound)
               .setColor(appBasicTheme)
               // todo - this fails unless URL is publicly accessible
-              .setImage(userFollowRequest.sendingUserProfileImageUri)
+              .setImage(userFriendRequest.sendingUserProfileImageUri)
               .setIcon("app_icon")
               .build()
           )
@@ -99,13 +99,13 @@ trait FirebaseMessageSerialization {
             ApnsFcmOptions
               .builder()
               // todo - this fails unless URL is publicly accessible
-              .setImage(userFollowRequest.sendingUserProfileImageUri)
+              .setImage(userFriendRequest.sendingUserProfileImageUri)
               .build()
           )
           .build()
       )
-      .setNotification(userFollowRequest.notification)
-      .putAllData(userFollowRequest.toJavaMap)
+      .setNotification(userFriendRequest.notification)
+      .putAllData(userFriendRequest.toJavaMap)
       .setToken(device.registrationToken)
       .build()
 

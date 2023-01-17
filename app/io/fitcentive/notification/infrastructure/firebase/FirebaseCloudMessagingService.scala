@@ -2,7 +2,7 @@ package io.fitcentive.notification.infrastructure.firebase
 
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
-import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFollowRequestedMessage}
+import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFriendRequestedMessage}
 import io.fitcentive.notification.domain.push.{
   DevicePushNotificationResponse,
   PushNotificationMessage,
@@ -37,14 +37,14 @@ class FirebaseCloudMessagingService @Inject() (
     } yield PushNotificationResponse(chatMessage.sendingUser, devicePushResponses)
   }
 
-  override def sendUserFollowRequestNotification(
-    userFollowRequest: UserFollowRequestedMessage
+  override def sendUserFriendRequestNotification(
+    userFriendRequest: UserFriendRequestedMessage
   ): Future[PushNotificationResponse] = {
     for {
-      deviceList <- notificationDeviceRepository.getDevicesForUser(userFollowRequest.targetUser)
-      deviceMessages = deviceList.map(createUserFollowRequest(_, userFollowRequest))
+      deviceList <- notificationDeviceRepository.getDevicesForUser(userFriendRequest.targetUser)
+      deviceMessages = deviceList.map(createUserFriendRequest(_, userFriendRequest))
       devicePushResponses <- Future.sequence(deviceMessages.map(sendDeviceMessage)).map(_.flatten.toList)
-    } yield PushNotificationResponse(userFollowRequest.requestingUser, devicePushResponses)
+    } yield PushNotificationResponse(userFriendRequest.requestingUser, devicePushResponses)
   }
 
   private def sendDeviceMessage(

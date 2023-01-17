@@ -18,6 +18,8 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AppConfigService @Inject() (config: Configuration) extends SettingsService {
 
+  override def imageHostBaseUrl: String = config.get[String]("image.host-url")
+
   override def pubSubServiceAccountStringCredentials: String =
     config.get[String]("gcp.pubsub.service-account-string-credentials")
 

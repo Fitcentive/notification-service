@@ -6,8 +6,8 @@ import io.fitcentive.notification.domain.email.{EmailContents, EmailFrom}
 import io.fitcentive.notification.domain.errors.EmailError
 import io.fitcentive.notification.domain.notification.{NotificationData, NotificationType}
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationResponse}
-import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFollowRequestedMessage}
-import io.fitcentive.notification.services.{EmailService, PushNotificationService, UserService}
+import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFriendRequestedMessage}
+import io.fitcentive.notification.services.{EmailService, PushNotificationService, SettingsService, UserService}
 import io.fitcentive.notification.repositories.{NotificationDataRepository, NotificationDeviceRepository}
 import io.fitcentive.sdk.error.{DomainError, EntityNotFoundError}
 import play.api.libs.json.Json
@@ -23,13 +23,11 @@ class AsyncNotificationApi @Inject() (
   notificationDataRepository: NotificationDataRepository,
   pushNotificationService: PushNotificationService,
   userService: UserService,
+  settingsService: SettingsService
 )(implicit ec: ExecutionContext) {
 
   val defaultLimit = 50
   val defaultOffset = 0
-
-  // todo - make this a config option
-  val imageHostBaseUrl: String = "https://api.vid.app/api/gateway/image"
 
   // Note we have made a conscious decision here to not modify/delete notification data in which `userId` appears as a supporting field
   // For example, in UserFollowRequest/UserLikedPost/UserCommentedOnPost notifications, we are not modifying the JSON data field
@@ -50,26 +48,26 @@ class AsyncNotificationApi @Inject() (
       )
     )
 
-  def updateUserFollowRequestNotificationData(
+  def updateUserFriendRequestNotificationData(
     targetUserId: UUID,
     isApproved: Boolean
   ): Future[Either[DomainError, NotificationData]] = {
     (for {
-      mostRecentUserFollowRequestNotification <- EitherT[Future, DomainError, NotificationData](
+      mostRecentUserFriendRequestNotification <- EitherT[Future, DomainError, NotificationData](
         notificationDataRepository
-          .getMostRecentNotificationOfTypeForUser(targetUserId, NotificationType.UserFollowRequest)
+          .getMostRecentNotificationOfTypeForUser(targetUserId, NotificationType.UserFriendRequest)
           .map(_.map(Right.apply).getOrElse(Left(EntityNotFoundError("Notification not found!"))))
       )
       newData = Json.obj(
-        "requestingUser" -> (mostRecentUserFollowRequestNotification.data \ "requestingUser").get,
+        "requestingUser" -> (mostRecentUserFriendRequestNotification.data \ "requestingUser").get,
         "targetUser" -> targetUserId,
         "isApproved" -> isApproved,
       )
       notificationDataUpsert = NotificationData.Upsert(
-        id = mostRecentUserFollowRequestNotification.id,
+        id = mostRecentUserFriendRequestNotification.id,
         targetUser = targetUserId,
-        isInteractive = mostRecentUserFollowRequestNotification.isInteractive,
-        notificationType = mostRecentUserFollowRequestNotification.notificationType,
+        isInteractive = mostRecentUserFriendRequestNotification.isInteractive,
+        notificationType = mostRecentUserFriendRequestNotification.notificationType,
         hasBeenInteractedWith = true,
         hasBeenViewed = true,
         data = newData
@@ -144,7 +142,7 @@ class AsyncNotificationApi @Inject() (
         EitherT.right[DomainError](notificationDataRepository.upsertNotification(notificationDataUpsert))
     } yield updatedNotificationData).value
 
-  def sendUserFollowRequestNotification(requestingUser: UUID, targetUser: UUID): Future[PushNotificationResponse] =
+  def sendUserFriendRequestNotification(requestingUser: UUID, targetUser: UUID): Future[PushNotificationResponse] =
     for {
       _ <- Future.unit
       data = Json.obj("requestingUser" -> requestingUser, "targetUser" -> targetUser)
@@ -154,16 +152,16 @@ class AsyncNotificationApi @Inject() (
         isInteractive = true,
         hasBeenInteractedWith = false,
         hasBeenViewed = false,
-        notificationType = NotificationType.UserFollowRequest,
+        notificationType = NotificationType.UserFriendRequest,
         data = data,
       )
       sendingUserProfile <- userService.getUserProfile(requestingUser)
       _ <- notificationDataRepository.upsertNotification(notificationData)
-      result <- pushNotificationService.sendUserFollowRequestNotification(
-        UserFollowRequestedMessage(
+      result <- pushNotificationService.sendUserFriendRequestNotification(
+        UserFriendRequestedMessage(
           requestingUser,
           targetUser,
-          sendingUserProfile.photoUrl.map(url => s"$imageHostBaseUrl/$url").getOrElse("")
+          sendingUserProfile.photoUrl.map(url => s"${settingsService.imageHostBaseUrl}/$url").getOrElse("")
         )
       )
     } yield result
@@ -183,8 +181,10 @@ class AsyncNotificationApi @Inject() (
         roomId = roomId,
         targetUserFirstName = targetUserProfile.firstName.getOrElse(""),
         targetUserLastName = targetUserProfile.lastName.getOrElse(""),
-        targetUserProfileImageUri = targetUserProfile.photoUrl.map(url => s"$imageHostBaseUrl/$url").getOrElse(""),
-        sendingUserProfileImageUri = sendingUserProfile.photoUrl.map(url => s"$imageHostBaseUrl/$url").getOrElse(""),
+        targetUserProfileImageUri =
+          targetUserProfile.photoUrl.map(url => s"${settingsService.imageHostBaseUrl}/$url").getOrElse(""),
+        sendingUserProfileImageUri =
+          sendingUserProfile.photoUrl.map(url => s"${settingsService.imageHostBaseUrl}/$url").getOrElse(""),
         message = message
       )
       result <- pushNotificationService.sendChatRoomMessageSentNotification(chatMessage)

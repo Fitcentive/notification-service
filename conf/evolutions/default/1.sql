@@ -4,12 +4,34 @@
 create extension if not exists "uuid-ossp";
 
 -- Constraint tables
+create table notification_types (
+    name varchar not null constraint pk_notification_types primary key,
+    description varchar not null
+);
+
+insert into notification_types (name, description) values ('UserFriendRequest', 'Notification type when user A requests to follow user B');
+insert into notification_types (name, description) values ('UserCommentedOnPost', 'Notification type when user A has their social media post was commented on by user B');
+insert into notification_types (name, description) values ('UserLikedPost', 'Notification type when user A has their social media post was liked by user B');
+
+-- Constraint tables
 create table fcm_devices (
     registration_token varchar not null constraint pk_fcm_devices primary key,
     user_id uuid not null,
     manufacturer varchar not null,
     model varchar not null,
     is_physical_device boolean not null default true,
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now()
+);
+
+create table notification_data (
+    id uuid not null constraint pk_notification_data primary key,
+    target_user uuid not null,
+    notification_type varchar not null constraint fk_notification_type references notification_types,
+    is_interactive boolean not null default false,
+    has_been_interacted_with boolean not null default false,
+    has_been_viewed boolean not null default false,
+    data jsonb,
     created_at timestamp not null default now(),
     updated_at timestamp not null default now()
 );

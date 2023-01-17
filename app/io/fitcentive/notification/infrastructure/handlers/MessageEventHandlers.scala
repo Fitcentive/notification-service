@@ -8,8 +8,8 @@ import io.fitcentive.notification.domain.pubsub.events.{
   EventHandlers,
   EventMessage,
   UserCommentedOnPostEvent,
-  UserFollowRequestDecisionEvent,
-  UserFollowRequestedEvent,
+  UserFriendRequestDecisionEvent,
+  UserFriendRequestedEvent,
   UserLikedPostEvent
 }
 import io.fitcentive.sdk.error.DomainError
@@ -28,14 +28,14 @@ trait MessageEventHandlers extends EventHandlers {
           .sendEmail(event.emailId, event.token)
           .flatMap(handleEitherResult(_))
 
-      case event: UserFollowRequestedEvent =>
+      case event: UserFriendRequestedEvent =>
         notificationApi
-          .sendUserFollowRequestNotification(event.requestingUser, event.targetUser)
+          .sendUserFriendRequestNotification(event.requestingUser, event.targetUser)
           .map(_ => ())
 
-      case event: UserFollowRequestDecisionEvent =>
+      case event: UserFriendRequestDecisionEvent =>
         notificationApi
-          .updateUserFollowRequestNotificationData(event.targetUser, event.isApproved)
+          .updateUserFriendRequestNotificationData(event.targetUser, event.isApproved)
           .map(_ => ())
 
       case event: ChatRoomMessageSentEvent =>

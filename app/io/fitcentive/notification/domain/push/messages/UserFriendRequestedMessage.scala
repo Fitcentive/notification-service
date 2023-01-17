@@ -7,7 +7,7 @@ import scala.jdk.CollectionConverters._
 import java.util
 import java.util.UUID
 
-case class UserFollowRequestedMessage(requestingUser: UUID, targetUser: UUID, sendingUserProfileImageUri: String)
+case class UserFriendRequestedMessage(requestingUser: UUID, targetUser: UUID, sendingUserProfileImageUri: String)
   extends PushNotificationEventMessage {
   val notification: Notification =
     Notification
