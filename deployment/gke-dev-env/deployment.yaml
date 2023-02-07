@@ -95,7 +95,7 @@ spec:
             - name: TOPIC_PARTICIPANT_ADDED_TO_MEETUP
               value: "participant-added-to-meetup"
             - name: TOPIC_MEETUP_DECISION
-              valu: "meetup-decision"
+              value: "meetup-decision"
             - name: SUBSCRIPTION_CHAT_ROOM_MESSAGE_SENT
               value: "chat-room-message-sent"
             - name: SUBSCRIPTION_USER_FRIEND_REQUESTED
