@@ -21,6 +21,20 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
 
   import AnormNotificationDataRepository._
 
+  override def getUnreadNotificationForMeetupDecisionWithType(
+    userId: UUID,
+    meetupId: UUID,
+    notificationType: NotificationType
+  ): Future[Option[NotificationData]] =
+    Future {
+      getRecordOpt(
+        SQL_GET_USER_UNREAD_NOTIFICATIONS_FOR_MEETUP_DECISION_AND_TYPE,
+        "userId" -> userId,
+        "meetupId" -> meetupId,
+        "notificationType" -> notificationType.stringValue
+      )(notificationDataRowParser).map(_.toDomain)
+    }
+
   override def getUnreadNotificationForPostWithType(
     userId: UUID,
     postId: UUID,
@@ -156,6 +170,15 @@ object AnormNotificationDataRepository {
       |and has_been_viewed = false
       |and notification_type = {notificationType}
       |and data::jsonb->>'postId' = {postId} ;
+      |""".stripMargin
+
+  private val SQL_GET_USER_UNREAD_NOTIFICATIONS_FOR_MEETUP_DECISION_AND_TYPE: String =
+    """
+      |select * from notification_data
+      |where target_user = {userId}::uuid
+      |and has_been_viewed = false
+      |and notification_type = {notificationType}
+      |and data::jsonb->>'meetupId' = {meetupId} ;
       |""".stripMargin
 
   private val SQL_GET_MOST_RECENT_USER_NOTIFICATION_OF_TYPE: String =

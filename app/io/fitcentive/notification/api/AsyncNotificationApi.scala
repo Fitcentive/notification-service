@@ -6,7 +6,11 @@ import io.fitcentive.notification.domain.email.{EmailContents, EmailFrom}
 import io.fitcentive.notification.domain.errors.EmailError
 import io.fitcentive.notification.domain.notification.{NotificationData, NotificationType}
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationResponse}
-import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFriendRequestedMessage}
+import io.fitcentive.notification.domain.push.messages.{
+  ChatRoomMessageSentMessage,
+  ParticipantAddedToMeetupMessage,
+  UserFriendRequestedMessage
+}
 import io.fitcentive.notification.services.{EmailService, PushNotificationService, SettingsService, UserService}
 import io.fitcentive.notification.repositories.{NotificationDataRepository, NotificationDeviceRepository}
 import io.fitcentive.sdk.error.{DomainError, EntityNotFoundError}
@@ -287,4 +291,57 @@ class AsyncNotificationApi @Inject() (
       }
     } yield ()
   }
+
+  // Send push notification as well as regular notification
+  def addParticipantAddedToMeetupNotification(meetupId: UUID, meetupOwnerId: UUID, participantId: UUID): Future[Unit] =
+    for {
+      _ <- Future.unit
+      data = Json.obj("meetupId" -> meetupId, "meetupOwnerId" -> meetupOwnerId, "participantId" -> participantId)
+      notificationData = NotificationData.Upsert(
+        id = UUID.randomUUID(),
+        targetUser = participantId,
+        isInteractive = false,
+        hasBeenInteractedWith = false,
+        hasBeenViewed = false,
+        notificationType = NotificationType.ParticipantAddedToMeetup,
+        data = data,
+      )
+      sendingUserProfile <- userService.getUserProfile(participantId)
+      _ <- notificationDataRepository.upsertNotification(notificationData)
+      result <- pushNotificationService.sendParticipantAddedToMeetupNotification(
+        ParticipantAddedToMeetupMessage(
+          meetupId,
+          meetupOwnerId,
+          participantId,
+          sendingUserProfile.photoUrl.map(url => s"${settingsService.imageHostBaseUrl}/$url").getOrElse("")
+        )
+      )
+    } yield result
+
+  def addMeetupDecisionNotification(
+    meetupId: UUID,
+    meetupOwnerId: UUID,
+    participantId: UUID,
+    hasAccepted: Boolean
+  ): Future[Unit] =
+    for {
+      _ <- {
+        val data = Json.obj(
+          "meetupId" -> meetupId,
+          "meetupOwnerId" -> meetupOwnerId,
+          "participantId" -> participantId,
+          "hasAccepted" -> hasAccepted
+        )
+        val notificationData = NotificationData.Upsert(
+          id = UUID.randomUUID(),
+          targetUser = meetupOwnerId,
+          isInteractive = false,
+          hasBeenInteractedWith = false,
+          hasBeenViewed = false,
+          notificationType = NotificationType.MeetupDecision,
+          data = data,
+        )
+        notificationDataRepository.upsertNotification(notificationData)
+      }
+    } yield ()
 }

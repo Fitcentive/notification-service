@@ -10,17 +10,21 @@ object NotificationType {
 
   def apply(notificationType: String): NotificationType =
     notificationType match {
-      case UserFriendRequest.stringValue   => UserFriendRequest
-      case UserCommentedOnPost.stringValue => UserCommentedOnPost
-      case UserLikedPost.stringValue       => UserLikedPost
-      case _                               => throw new Exception("Unexpected notification type")
+      case UserFriendRequest.stringValue        => UserFriendRequest
+      case UserCommentedOnPost.stringValue      => UserCommentedOnPost
+      case UserLikedPost.stringValue            => UserLikedPost
+      case MeetupDecision.stringValue           => MeetupDecision
+      case ParticipantAddedToMeetup.stringValue => ParticipantAddedToMeetup
+      case _                                    => throw new Exception("Unexpected notification type")
     }
 
   implicit lazy val writes: Writes[NotificationType] = {
     {
-      case UserFriendRequest   => JsString(UserFriendRequest.stringValue)
-      case UserCommentedOnPost => JsString(UserCommentedOnPost.stringValue)
-      case UserLikedPost       => JsString(UserLikedPost.stringValue)
+      case UserFriendRequest        => JsString(UserFriendRequest.stringValue)
+      case UserCommentedOnPost      => JsString(UserCommentedOnPost.stringValue)
+      case UserLikedPost            => JsString(UserLikedPost.stringValue)
+      case MeetupDecision           => JsString(MeetupDecision.stringValue)
+      case ParticipantAddedToMeetup => JsString(ParticipantAddedToMeetup.stringValue)
     }
   }
 
@@ -34,6 +38,14 @@ object NotificationType {
 
   case object UserLikedPost extends NotificationType {
     val stringValue: String = "UserLikedPost"
+  }
+
+  case object MeetupDecision extends NotificationType {
+    val stringValue: String = "MeetupDecision"
+  }
+
+  case object ParticipantAddedToMeetup extends NotificationType {
+    val stringValue: String = "ParticipantAddedToMeetup"
   }
 
 }

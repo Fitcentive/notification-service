@@ -9,7 +9,9 @@ case class TopicsConfig(
   userFriendRequestDecisionTopic: String,
   userCommentedOnPostTopic: String,
   userLikedPostTopic: String,
-  chatRoomMessageSentTopic: String
+  chatRoomMessageSentTopic: String,
+  meetupDecisionTopic: String,
+  participantAddedToMeetupTopic: String,
 ) extends PubSubTopicConfig {
 
   val topics: Seq[String] =
@@ -19,7 +21,9 @@ case class TopicsConfig(
       userFriendRequestDecisionTopic,
       chatRoomMessageSentTopic,
       userCommentedOnPostTopic,
-      userLikedPostTopic
+      userLikedPostTopic,
+      meetupDecisionTopic,
+      participantAddedToMeetupTopic,
     )
 
 }
@@ -33,5 +37,7 @@ object TopicsConfig {
       config.getString("user-commented-on-post"),
       config.getString("user-liked-post"),
       config.getString("chat-room-message-sent"),
+      config.getString("meetup-decision"),
+      config.getString("participant-added-to-meetup"),
     )
 }

@@ -2,7 +2,11 @@ package io.fitcentive.notification.infrastructure.firebase
 
 import com.google.firebase.FirebaseApp
 import com.google.firebase.messaging.FirebaseMessaging
-import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFriendRequestedMessage}
+import io.fitcentive.notification.domain.push.messages.{
+  ChatRoomMessageSentMessage,
+  ParticipantAddedToMeetupMessage,
+  UserFriendRequestedMessage
+}
 import io.fitcentive.notification.domain.push.{
   DevicePushNotificationResponse,
   PushNotificationMessage,
@@ -45,6 +49,16 @@ class FirebaseCloudMessagingService @Inject() (
       deviceMessages = deviceList.map(createUserFriendRequest(_, userFriendRequest))
       devicePushResponses <- Future.sequence(deviceMessages.map(sendDeviceMessage)).map(_.flatten.toList)
     } yield PushNotificationResponse(userFriendRequest.requestingUser, devicePushResponses)
+  }
+
+  override def sendParticipantAddedToMeetupNotification(
+    participantAddedToMeetupMessage: ParticipantAddedToMeetupMessage
+  ): Future[PushNotificationResponse] = {
+    for {
+      deviceList <- notificationDeviceRepository.getDevicesForUser(participantAddedToMeetupMessage.participantId)
+      deviceMessages = deviceList.map(createParticipantAddedToMeetupNotification(_, participantAddedToMeetupMessage))
+      devicePushResponses <- Future.sequence(deviceMessages.map(sendDeviceMessage)).map(_.flatten.toList)
+    } yield PushNotificationResponse(participantAddedToMeetupMessage.participantId, devicePushResponses)
   }
 
   private def sendDeviceMessage(

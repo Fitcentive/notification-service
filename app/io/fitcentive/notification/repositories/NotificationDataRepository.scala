@@ -24,4 +24,9 @@ trait NotificationDataRepository {
     postId: UUID,
     notificationType: NotificationType
   ): Future[Option[NotificationData]]
+  def getUnreadNotificationForMeetupDecisionWithType(
+    userId: UUID,
+    meetupId: UUID,
+    notificationType: NotificationType
+  ): Future[Option[NotificationData]]
 }

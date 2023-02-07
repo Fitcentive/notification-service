@@ -1,16 +1,12 @@
 package io.fitcentive.notification.infrastructure.firebase
 
-import com.google.firebase.messaging.{
-  AndroidConfig,
-  AndroidNotification,
-  ApnsConfig,
-  ApnsFcmOptions,
-  Aps,
-  FcmOptions,
-  Message
-}
+import com.google.firebase.messaging.{AndroidConfig, AndroidNotification, ApnsConfig, ApnsFcmOptions, Aps, Message}
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationMessage}
-import io.fitcentive.notification.domain.push.messages.{ChatRoomMessageSentMessage, UserFriendRequestedMessage}
+import io.fitcentive.notification.domain.push.messages.{
+  ChatRoomMessageSentMessage,
+  ParticipantAddedToMeetupMessage,
+  UserFriendRequestedMessage
+}
 
 trait FirebaseMessageSerialization {
   private val notificationSound = "notification1.mp3"
@@ -30,7 +26,6 @@ trait FirebaseMessageSerialization {
               .builder()
               .setSound(notificationSound)
               .setColor(appBasicTheme)
-              // todo - this fails unless URL is publicly accessible
               .setImage(chatMessage.sendingUserProfileImageUri)
               .setIcon("app_icon")
               .build()
@@ -50,7 +45,6 @@ trait FirebaseMessageSerialization {
           .setFcmOptions(
             ApnsFcmOptions
               .builder()
-              // todo - this fails unless URL is publicly accessible
               .setImage(chatMessage.sendingUserProfileImageUri)
               .build()
           )
@@ -78,7 +72,6 @@ trait FirebaseMessageSerialization {
               .builder()
               .setSound(notificationSound)
               .setColor(appBasicTheme)
-              // todo - this fails unless URL is publicly accessible
               .setImage(userFriendRequest.sendingUserProfileImageUri)
               .setIcon("app_icon")
               .build()
@@ -98,7 +91,6 @@ trait FirebaseMessageSerialization {
           .setFcmOptions(
             ApnsFcmOptions
               .builder()
-              // todo - this fails unless URL is publicly accessible
               .setImage(userFriendRequest.sendingUserProfileImageUri)
               .build()
           )
@@ -106,6 +98,52 @@ trait FirebaseMessageSerialization {
       )
       .setNotification(userFriendRequest.notification)
       .putAllData(userFriendRequest.toJavaMap)
+      .setToken(device.registrationToken)
+      .build()
+
+    PushNotificationMessage(device.registrationToken, msg)
+  }
+
+  def createParticipantAddedToMeetupNotification(
+    device: NotificationDevice,
+    participantAddedToMeetupMessage: ParticipantAddedToMeetupMessage
+  ): PushNotificationMessage = {
+    val msg = Message
+      .builder()
+      .setAndroidConfig(
+        AndroidConfig
+          .builder()
+          .setNotification(
+            AndroidNotification
+              .builder()
+              .setSound(notificationSound)
+              .setColor(appBasicTheme)
+              .setImage(participantAddedToMeetupMessage.meetupOwnerPhotoUrl)
+              .setIcon("app_icon")
+              .build()
+          )
+          .build()
+      )
+      .setApnsConfig(
+        ApnsConfig
+          .builder()
+          .setAps(
+            Aps
+              .builder()
+              .setSound(notificationSound)
+              .setMutableContent(true)
+              .build()
+          )
+          .setFcmOptions(
+            ApnsFcmOptions
+              .builder()
+              .setImage(participantAddedToMeetupMessage.meetupOwnerPhotoUrl)
+              .build()
+          )
+          .build()
+      )
+      .setNotification(participantAddedToMeetupMessage.notification)
+      .putAllData(participantAddedToMeetupMessage.toJavaMap)
       .setToken(device.registrationToken)
       .build()
 

@@ -9,7 +9,9 @@ case class SubscriptionsConfig(
   userFriendRequestDecisionSubscription: String,
   userCommentedOnPostSubscription: String,
   userLikedPostSubscription: String,
-  chatRoomMessageSentSubscription: String
+  chatRoomMessageSentSubscription: String,
+  meetupDecisionSubscription: String,
+  participantAddedToMeetupSubscription: String,
 ) extends PubSubSubscriptionConfig {
 
   val subscriptions: Seq[String] = Seq(
@@ -19,6 +21,8 @@ case class SubscriptionsConfig(
     chatRoomMessageSentSubscription,
     userCommentedOnPostSubscription,
     userLikedPostSubscription,
+    meetupDecisionSubscription,
+    participantAddedToMeetupSubscription
   )
 }
 
@@ -31,5 +35,7 @@ object SubscriptionsConfig {
       userCommentedOnPostSubscription = config.getString("user-commented-on-post"),
       userLikedPostSubscription = config.getString("user-liked-post"),
       chatRoomMessageSentSubscription = config.getString("chat-room-message-sent"),
+      meetupDecisionSubscription = config.getString("meetup-decision"),
+      participantAddedToMeetupSubscription = config.getString("participant-added-to-meetup"),
     )
 }
