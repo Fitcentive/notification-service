@@ -92,6 +92,10 @@ spec:
               value: "user-friend-requested"
             - name: TOPIC_USER_FRIEND_REQUEST_DECISION
               value: "user-friend-request-decision"
+            - name: TOPIC_PARTICIPANT_ADDED_TO_MEETUP
+              value: "participant-added-to-meetup"
+            - name: TOPIC_MEETUP_DECISION
+              valu: "meetup-decision"
             - name: SUBSCRIPTION_CHAT_ROOM_MESSAGE_SENT
               value: "chat-room-message-sent"
             - name: SUBSCRIPTION_USER_FRIEND_REQUESTED
@@ -102,6 +106,10 @@ spec:
               value: "user-commented-on-post"
             - name: SUBSCRIPTION_USER_LIKED_POST
               value: "user-liked-post"
+            - name: SUBSCRIPTION_PARTICIPANT_ADDED_TO_MEETUP
+              value: "participant-added-to-meetup"
+            - name: SUBSCRIPTION_MEETUP_DECISION
+              value: "meetup-decision"
             - name: JWT_ISSUER
               value: "https://auth.fitcentive.xyz"
             - name: KEYCLOAK_SERVER_URL
