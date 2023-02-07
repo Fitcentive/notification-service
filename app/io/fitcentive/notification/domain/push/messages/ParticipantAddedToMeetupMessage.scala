@@ -24,6 +24,7 @@ case class ParticipantAddedToMeetupMessage(
     Seq(
       "type" -> "participant_added_to_meetup",
       "meetupOwnerId" -> meetupOwnerId.toString,
+      "meetupId" -> meetupId.toString,
       "participantId" -> participantId.toString,
       "meetupOwnerPhotoUrl" -> meetupOwnerPhotoUrl,
     ).toMap.asJava
