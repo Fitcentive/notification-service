@@ -183,8 +183,8 @@ class AsyncNotificationApi @Inject() (
         sendingUser = sendingUserId,
         targetUser = targetUserId,
         roomId = roomId,
-        targetUserFirstName = targetUserProfile.firstName.getOrElse(""),
-        targetUserLastName = targetUserProfile.lastName.getOrElse(""),
+        sendingUserFirstName = sendingUserProfile.firstName.getOrElse(""),
+        sendingUserLastName = sendingUserProfile.lastName.getOrElse(""),
         targetUserProfileImageUri =
           targetUserProfile.photoUrl.map(url => s"${settingsService.imageHostBaseUrl}/$url").getOrElse(""),
         sendingUserProfileImageUri =

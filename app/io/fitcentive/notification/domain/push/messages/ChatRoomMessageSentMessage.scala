@@ -11,8 +11,8 @@ case class ChatRoomMessageSentMessage(
   sendingUser: UUID,
   targetUser: UUID,
   roomId: UUID,
-  targetUserFirstName: String,
-  targetUserLastName: String,
+  sendingUserFirstName: String,
+  sendingUserLastName: String,
   targetUserProfileImageUri: String,
   sendingUserProfileImageUri: String,
   message: String
@@ -21,7 +21,7 @@ case class ChatRoomMessageSentMessage(
   val notification: Notification =
     Notification
       .builder()
-      .setTitle(s"$targetUserFirstName $targetUserLastName")
+      .setTitle(s"$sendingUserFirstName $sendingUserLastName")
       .setBody(message)
       .setImage(targetUserProfileImageUri)
       .build()
