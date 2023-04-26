@@ -45,7 +45,7 @@ class AsyncNotificationApi @Inject() (
   def sendEmail(emailId: String, token: String): Future[Either[EmailError, Unit]] =
     emailService.sendEmail(
       EmailContents(
-        from = EmailFrom("Fitcentive", "no-reply@fitcentive.io"),
+        from = EmailFrom(settingsService.smtpConfig.appName, settingsService.smtpConfig.noReplyEmail),
         to = emailId,
         subject = "Email Verification Token",
         body = s"Here is your token: $token"

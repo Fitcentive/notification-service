@@ -68,14 +68,24 @@ spec:
               value: "localhost"
             - name: DB_PORT
               value: "5432"
+#            - name: SMTP_HOST
+#              value: "mailhog-service.mailhog"
+#            - name: SMTP_PORT
+#              value: "1025"
+#            - name: SMTP_USER
+#              value: ""
+#            - name: SMTP_PASSWORD
+#              value: ""
             - name: SMTP_HOST
-              value: "mailhog-service.mailhog"
+              value: "in-v3.mailjet.com"
             - name: SMTP_PORT
-              value: "1025"
+              value: "587"
             - name: SMTP_USER
-              value: ""
+              # This value is the API key from mailjet - https://app.mailjet.com/account/relay
+              value: "c97324bd1ac6e563eef5424c278d5d05"
+              # This value is the associated secret with the API key above - https://app.mailjet.com/account/relay
             - name: SMTP_PASSWORD
-              value: ""
+              value: "e6d38f5fedb15725a7e89db05fd7b32c"
             - name: RUNTIME_ENVIRONMENT
               value: "gke-dev-env"
             - name: TOPIC_EMAIL_VERIFICATION_TOKEN_CREATED

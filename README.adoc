@@ -90,3 +90,10 @@ Note - these pre-requisites need only be done **once ever**. If you are deployin
 4. `cd deployment`
 5. `kubectl apply -f gke-dev-env`
 
+
+== Mailjet setup
+1. Create account
+2. Create API key + secret - https://app.mailjet.com/account/relay
+3. Validate domain and use email as @validated.domain
+
+
