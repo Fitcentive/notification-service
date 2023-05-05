@@ -11,6 +11,7 @@ case class SubscriptionsConfig(
   userLikedPostSubscription: String,
   chatRoomMessageSentSubscription: String,
   meetupDecisionSubscription: String,
+  meetupReminderSubscription: String,
   participantAddedToMeetupSubscription: String,
 ) extends PubSubSubscriptionConfig {
 
@@ -22,6 +23,7 @@ case class SubscriptionsConfig(
     userCommentedOnPostSubscription,
     userLikedPostSubscription,
     meetupDecisionSubscription,
+    meetupReminderSubscription,
     participantAddedToMeetupSubscription
   )
 }
@@ -36,6 +38,7 @@ object SubscriptionsConfig {
       userLikedPostSubscription = config.getString("user-liked-post"),
       chatRoomMessageSentSubscription = config.getString("chat-room-message-sent"),
       meetupDecisionSubscription = config.getString("meetup-decision"),
+      meetupReminderSubscription = config.getString("meetup-reminder"),
       participantAddedToMeetupSubscription = config.getString("participant-added-to-meetup"),
     )
 }

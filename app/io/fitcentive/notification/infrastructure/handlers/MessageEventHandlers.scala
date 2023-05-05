@@ -8,6 +8,7 @@ import io.fitcentive.notification.domain.pubsub.events.{
   EventHandlers,
   EventMessage,
   MeetupDecisionEvent,
+  MeetupReminderEvent,
   ParticipantAddedToMeetupEvent,
   UserCommentedOnPostEvent,
   UserFriendRequestDecisionEvent,
@@ -63,6 +64,11 @@ trait MessageEventHandlers extends EventHandlers {
       case event: MeetupDecisionEvent =>
         notificationApi
           .addMeetupDecisionNotification(event.meetupId, event.meetupOwnerId, event.participantId, event.hasAccepted)
+          .map(_ => ())
+
+      case event: MeetupReminderEvent =>
+        notificationApi
+          .meetupReminderNotification(event.meetupId, event.meetupName, event.targetUser)
           .map(_ => ())
 
       case _ =>

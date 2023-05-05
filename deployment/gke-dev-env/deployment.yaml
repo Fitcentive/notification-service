@@ -106,6 +106,8 @@ spec:
               value: "participant-added-to-meetup"
             - name: TOPIC_MEETUP_DECISION
               value: "meetup-decision"
+            - name: TOPIC_MEETUP_REMINDER
+              value: "meetup-reminder"
             - name: SUBSCRIPTION_CHAT_ROOM_MESSAGE_SENT
               value: "chat-room-message-sent"
             - name: SUBSCRIPTION_USER_FRIEND_REQUESTED
@@ -120,6 +122,8 @@ spec:
               value: "participant-added-to-meetup"
             - name: SUBSCRIPTION_MEETUP_DECISION
               value: "meetup-decision"
+            - name: SUBSCRIPTION_MEETUP_REMINDER
+              value: "meetup-reminder"
             - name: JWT_ISSUER
               value: "https://auth.fitcentive.xyz"
             - name: KEYCLOAK_SERVER_URL

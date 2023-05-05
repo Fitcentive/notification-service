@@ -4,6 +4,7 @@ import com.google.firebase.messaging.{AndroidConfig, AndroidNotification, ApnsCo
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationMessage}
 import io.fitcentive.notification.domain.push.messages.{
   ChatRoomMessageSentMessage,
+  MeetupReminderMessage,
   ParticipantAddedToMeetupMessage,
   UserFriendRequestedMessage
 }
@@ -11,6 +12,50 @@ import io.fitcentive.notification.domain.push.messages.{
 trait FirebaseMessageSerialization {
   private val notificationSound = "notification1.mp3"
   private val appBasicTheme = "#009688"
+
+  def createMeetupReminder(
+    device: NotificationDevice,
+    meetupReminderMessage: MeetupReminderMessage
+  ): PushNotificationMessage = {
+    val msg = Message
+      .builder()
+      .setAndroidConfig(
+        AndroidConfig
+          .builder()
+          .setNotification(
+            AndroidNotification
+              .builder()
+              .setSound(notificationSound)
+              .setColor(appBasicTheme)
+              .setIcon("app_icon")
+              .build()
+          )
+          .build()
+      )
+      .setApnsConfig(
+        ApnsConfig
+          .builder()
+          .setAps(
+            Aps
+              .builder()
+              .setSound(notificationSound)
+              .setMutableContent(true)
+              .build()
+          )
+          .setFcmOptions(
+            ApnsFcmOptions
+              .builder()
+              .build()
+          )
+          .build()
+      )
+      .setNotification(meetupReminderMessage.notification)
+      .putAllData(meetupReminderMessage.toJavaMap)
+      .setToken(device.registrationToken)
+      .build()
+
+    PushNotificationMessage(device.registrationToken, msg)
+  }
 
   def createChatRoomMessageSent(
     device: NotificationDevice,

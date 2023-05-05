@@ -8,6 +8,7 @@ import io.fitcentive.notification.domain.notification.{NotificationData, Notific
 import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificationResponse}
 import io.fitcentive.notification.domain.push.messages.{
   ChatRoomMessageSentMessage,
+  MeetupReminderMessage,
   ParticipantAddedToMeetupMessage,
   UserFriendRequestedMessage
 }
@@ -344,4 +345,11 @@ class AsyncNotificationApi @Inject() (
         notificationDataRepository.upsertNotification(notificationData)
       }
     } yield ()
+
+  def meetupReminderNotification(meetupId: UUID, meetupName: String, targetUser: UUID): Future[Unit] =
+    for {
+      _ <- Future.unit
+      meetupReminderMessage = MeetupReminderMessage(targetUser, meetupId, meetupName)
+      result <- pushNotificationService.sendMeetupReminderNotification(meetupReminderMessage)
+    } yield result
 }

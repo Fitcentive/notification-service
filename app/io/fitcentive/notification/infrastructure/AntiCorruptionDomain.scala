@@ -4,7 +4,7 @@ import io.fitcentive.notification.domain.pubsub.events._
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
 import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFriendRequested}
 import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
-import io.fitcentive.registry.events.meetup.{MeetupDecision, ParticipantAddedToMeetup}
+import io.fitcentive.registry.events.meetup.{MeetupDecision, MeetupReminder, ParticipantAddedToMeetup}
 import io.fitcentive.registry.events.user.UserFriendRequestDecision
 
 trait AntiCorruptionDomain {
@@ -47,6 +47,10 @@ trait AntiCorruptionDomain {
   implicit class MeetupDecisionEvent2Domain(event: MeetupDecision) {
     def toDomain: MeetupDecisionEvent =
       MeetupDecisionEvent(event.meetupId, event.meetupOwnerId, event.participantId, event.hasAccepted)
+  }
+
+  implicit class MeetupReminderEvent2Domain(event: MeetupReminder) {
+    def toDomain: MeetupReminderEvent = MeetupReminderEvent(event.meetupId, event.meetupName, event.targetUser)
   }
 
 }

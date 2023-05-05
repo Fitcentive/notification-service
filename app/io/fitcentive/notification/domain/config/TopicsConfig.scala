@@ -11,6 +11,7 @@ case class TopicsConfig(
   userLikedPostTopic: String,
   chatRoomMessageSentTopic: String,
   meetupDecisionTopic: String,
+  meetupReminderTopic: String,
   participantAddedToMeetupTopic: String,
 ) extends PubSubTopicConfig {
 
@@ -23,6 +24,7 @@ case class TopicsConfig(
       userCommentedOnPostTopic,
       userLikedPostTopic,
       meetupDecisionTopic,
+      meetupReminderTopic,
       participantAddedToMeetupTopic,
     )
 
@@ -38,6 +40,7 @@ object TopicsConfig {
       config.getString("user-liked-post"),
       config.getString("chat-room-message-sent"),
       config.getString("meetup-decision"),
+      config.getString("meetup-reminder"),
       config.getString("participant-added-to-meetup"),
     )
 }

@@ -3,6 +3,7 @@ package io.fitcentive.notification.services
 import com.google.inject.ImplementedBy
 import io.fitcentive.notification.domain.push.messages.{
   ChatRoomMessageSentMessage,
+  MeetupReminderMessage,
   ParticipantAddedToMeetupMessage,
   UserFriendRequestedMessage
 }
@@ -18,4 +19,5 @@ trait PushNotificationService {
   ): Future[PushNotificationResponse]
   def sendUserFriendRequestNotification(userFriendRequest: UserFriendRequestedMessage): Future[PushNotificationResponse]
   def sendChatRoomMessageSentNotification(chatMessage: ChatRoomMessageSentMessage): Future[PushNotificationResponse]
+  def sendMeetupReminderNotification(chatMessage: MeetupReminderMessage): Future[PushNotificationResponse]
 }
