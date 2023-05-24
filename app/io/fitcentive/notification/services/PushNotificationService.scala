@@ -4,6 +4,7 @@ import com.google.inject.ImplementedBy
 import io.fitcentive.notification.domain.push.messages.{
   ChatRoomMessageSentMessage,
   MeetupReminderMessage,
+  ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
   UserFriendRequestedMessage
 }
@@ -16,6 +17,9 @@ import scala.concurrent.Future
 trait PushNotificationService {
   def sendParticipantAddedToMeetupNotification(
     participantAddedToMeetupMessage: ParticipantAddedToMeetupMessage
+  ): Future[PushNotificationResponse]
+  def sendParticipantAddedAvailabilityToMeetupNotification(
+    participantAddedAvailabilityToMeetupMessage: ParticipantAddedAvailabilityToMeetupMessage
   ): Future[PushNotificationResponse]
   def sendUserFriendRequestNotification(userFriendRequest: UserFriendRequestedMessage): Future[PushNotificationResponse]
   def sendChatRoomMessageSentNotification(chatMessage: ChatRoomMessageSentMessage): Future[PushNotificationResponse]

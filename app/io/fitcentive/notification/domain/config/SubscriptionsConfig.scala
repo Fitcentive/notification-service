@@ -13,6 +13,7 @@ case class SubscriptionsConfig(
   meetupDecisionSubscription: String,
   meetupReminderSubscription: String,
   participantAddedToMeetupSubscription: String,
+  participantAddedAvailabilityToMeetupSubscription: String,
 ) extends PubSubSubscriptionConfig {
 
   val subscriptions: Seq[String] = Seq(
@@ -24,7 +25,8 @@ case class SubscriptionsConfig(
     userLikedPostSubscription,
     meetupDecisionSubscription,
     meetupReminderSubscription,
-    participantAddedToMeetupSubscription
+    participantAddedToMeetupSubscription,
+    participantAddedAvailabilityToMeetupSubscription
   )
 }
 
@@ -40,5 +42,6 @@ object SubscriptionsConfig {
       meetupDecisionSubscription = config.getString("meetup-decision"),
       meetupReminderSubscription = config.getString("meetup-reminder"),
       participantAddedToMeetupSubscription = config.getString("participant-added-to-meetup"),
+      participantAddedAvailabilityToMeetupSubscription = config.getString("participant-added-availability-to-meetup")
     )
 }

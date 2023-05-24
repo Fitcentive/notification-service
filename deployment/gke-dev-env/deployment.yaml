@@ -104,6 +104,8 @@ spec:
               value: "user-friend-request-decision"
             - name: TOPIC_PARTICIPANT_ADDED_TO_MEETUP
               value: "participant-added-to-meetup"
+            - name: TOPIC_PARTICIPANT_ADDED_AVAILABILITY_TO_MEETUP
+              value: "participant-added-availability-to-meetup"
             - name: TOPIC_MEETUP_DECISION
               value: "meetup-decision"
             - name: TOPIC_MEETUP_REMINDER
@@ -120,6 +122,8 @@ spec:
               value: "user-liked-post"
             - name: SUBSCRIPTION_PARTICIPANT_ADDED_TO_MEETUP
               value: "participant-added-to-meetup"
+            - name: SUBSCRIPTION_PARTICIPANT_ADDED_AVAILABILITY_TO_MEETUP
+              value: "participant-added-availability-to-meetup"
             - name: SUBSCRIPTION_MEETUP_DECISION
               value: "meetup-decision"
             - name: SUBSCRIPTION_MEETUP_REMINDER

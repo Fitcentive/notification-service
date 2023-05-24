@@ -9,6 +9,7 @@ import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificat
 import io.fitcentive.notification.domain.push.messages.{
   ChatRoomMessageSentMessage,
   MeetupReminderMessage,
+  ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
   UserFriendRequestedMessage
 }
@@ -313,6 +314,44 @@ class AsyncNotificationApi @Inject() (
         ParticipantAddedToMeetupMessage(
           meetupId,
           meetupOwnerId,
+          participantId,
+          sendingUserProfile.photoUrl.map(url => s"${settingsService.imageHostBaseUrl}/$url").getOrElse("")
+        )
+      )
+    } yield result
+
+  // Send push notification as well as regular notification
+  def addParticipantAddedAvailabilityToMeetupNotification(
+    meetupId: UUID,
+    meetupOwnerId: UUID,
+    participantId: UUID,
+    targetUserId: UUID
+  ): Future[Unit] =
+    for {
+      _ <- Future.unit
+      data = Json.obj(
+        "meetupId" -> meetupId,
+        "meetupOwnerId" -> meetupOwnerId,
+        "participantId" -> participantId,
+        "targetUserId" -> targetUserId
+      )
+      notificationData = NotificationData.Upsert(
+        id = UUID.randomUUID(),
+        targetUser = targetUserId,
+        isInteractive = false,
+        hasBeenInteractedWith = false,
+        hasBeenViewed = false,
+        notificationType = NotificationType.ParticipantAddedAvailabilityToMeetup,
+        data = data,
+      )
+      sendingUserProfile <- userService.getUserProfile(participantId)
+      _ <- notificationDataRepository.upsertNotification(notificationData)
+      result <- pushNotificationService.sendParticipantAddedAvailabilityToMeetupNotification(
+        ParticipantAddedAvailabilityToMeetupMessage(
+          meetupId,
+          meetupOwnerId,
+          targetUserId,
+          s"${sendingUserProfile.firstName.getOrElse("")} ${sendingUserProfile.lastName.getOrElse("")}",
           participantId,
           sendingUserProfile.photoUrl.map(url => s"${settingsService.imageHostBaseUrl}/$url").getOrElse("")
         )

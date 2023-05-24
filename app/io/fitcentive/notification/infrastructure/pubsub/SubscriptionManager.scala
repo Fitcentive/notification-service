@@ -5,7 +5,12 @@ import io.fitcentive.notification.domain.pubsub.events.EventHandlers
 import io.fitcentive.notification.infrastructure.AntiCorruptionDomain
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
-import io.fitcentive.registry.events.meetup.{MeetupDecision, MeetupReminder, ParticipantAddedToMeetup}
+import io.fitcentive.registry.events.meetup.{
+  MeetupDecision,
+  MeetupReminder,
+  ParticipantAddedAvailabilityToMeetup,
+  ParticipantAddedToMeetup
+}
 import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFriendRequested}
 import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
 import io.fitcentive.registry.events.user.UserFriendRequestDecision
@@ -40,6 +45,7 @@ class SubscriptionManager(
       _ <- subscribeToMeetupDecisionEvent
       _ <- subscribeToMeetupReminderEvent
       _ <- subscribeToParticipantAddedToMeetupEvent
+      _ <- subscribeToParticipantAvailabilityAddedToMeetupEvent
       _ = logInfo("Subscriptions set up successfully!")
     } yield ()
   }
@@ -114,5 +120,13 @@ class SubscriptionManager(
         environment,
         config.subscriptionsConfig.participantAddedToMeetupSubscription,
         config.topicsConfig.participantAddedToMeetupTopic
+      )(_.payload.toDomain.pipe(handleEvent))
+
+  private def subscribeToParticipantAvailabilityAddedToMeetupEvent: Future[Unit] =
+    subscriber
+      .subscribe[ParticipantAddedAvailabilityToMeetup](
+        environment,
+        config.subscriptionsConfig.participantAddedAvailabilityToMeetupSubscription,
+        config.topicsConfig.participantAddedAvailabilityToMeetupTopic
       )(_.payload.toDomain.pipe(handleEvent))
 }

@@ -5,6 +5,7 @@ import io.fitcentive.notification.domain.push.{NotificationDevice, PushNotificat
 import io.fitcentive.notification.domain.push.messages.{
   ChatRoomMessageSentMessage,
   MeetupReminderMessage,
+  ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
   UserFriendRequestedMessage
 }
@@ -189,6 +190,52 @@ trait FirebaseMessageSerialization {
       )
       .setNotification(participantAddedToMeetupMessage.notification)
       .putAllData(participantAddedToMeetupMessage.toJavaMap)
+      .setToken(device.registrationToken)
+      .build()
+
+    PushNotificationMessage(device.registrationToken, msg)
+  }
+
+  def createParticipantAddedAvailabilityToMeetupNotification(
+    device: NotificationDevice,
+    participantAddedAvailabilityToMeetupMessage: ParticipantAddedAvailabilityToMeetupMessage
+  ): PushNotificationMessage = {
+    val msg = Message
+      .builder()
+      .setAndroidConfig(
+        AndroidConfig
+          .builder()
+          .setNotification(
+            AndroidNotification
+              .builder()
+              .setSound(notificationSound)
+              .setColor(appBasicTheme)
+              .setImage(participantAddedAvailabilityToMeetupMessage.participantPhotoUrl)
+              .setIcon("app_icon")
+              .build()
+          )
+          .build()
+      )
+      .setApnsConfig(
+        ApnsConfig
+          .builder()
+          .setAps(
+            Aps
+              .builder()
+              .setSound(notificationSound)
+              .setMutableContent(true)
+              .build()
+          )
+          .setFcmOptions(
+            ApnsFcmOptions
+              .builder()
+              .setImage(participantAddedAvailabilityToMeetupMessage.participantPhotoUrl)
+              .build()
+          )
+          .build()
+      )
+      .setNotification(participantAddedAvailabilityToMeetupMessage.notification)
+      .putAllData(participantAddedAvailabilityToMeetupMessage.toJavaMap)
       .setToken(device.registrationToken)
       .build()
 

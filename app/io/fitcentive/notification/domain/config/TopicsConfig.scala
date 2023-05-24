@@ -13,6 +13,7 @@ case class TopicsConfig(
   meetupDecisionTopic: String,
   meetupReminderTopic: String,
   participantAddedToMeetupTopic: String,
+  participantAddedAvailabilityToMeetupTopic: String,
 ) extends PubSubTopicConfig {
 
   val topics: Seq[String] =
@@ -26,6 +27,7 @@ case class TopicsConfig(
       meetupDecisionTopic,
       meetupReminderTopic,
       participantAddedToMeetupTopic,
+      participantAddedAvailabilityToMeetupTopic,
     )
 
 }
@@ -42,5 +44,6 @@ object TopicsConfig {
       config.getString("meetup-decision"),
       config.getString("meetup-reminder"),
       config.getString("participant-added-to-meetup"),
+      config.getString("participant-added-availability-to-meetup"),
     )
 }
