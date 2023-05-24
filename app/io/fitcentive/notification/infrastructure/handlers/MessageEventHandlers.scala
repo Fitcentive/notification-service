@@ -59,12 +59,13 @@ trait MessageEventHandlers extends EventHandlers {
 
       case event: ParticipantAddedToMeetupEvent =>
         notificationApi
-          .addParticipantAddedToMeetupNotification(event.meetupId, event.ownerId, event.participantId)
+          .addParticipantAddedToMeetupNotification(event.meetupName, event.meetupId, event.ownerId, event.participantId)
           .map(_ => ())
 
       case event: ParticipantAddedAvailabilityToMeetupEvent =>
         notificationApi
           .addParticipantAddedAvailabilityToMeetupNotification(
+            event.meetupName,
             event.meetupId,
             event.meetupOwnerId,
             event.participantId,
@@ -74,7 +75,13 @@ trait MessageEventHandlers extends EventHandlers {
 
       case event: MeetupDecisionEvent =>
         notificationApi
-          .addMeetupDecisionNotification(event.meetupId, event.meetupOwnerId, event.participantId, event.hasAccepted)
+          .addMeetupDecisionNotification(
+            event.meetupName,
+            event.meetupId,
+            event.meetupOwnerId,
+            event.participantId,
+            event.hasAccepted,
+          )
           .map(_ => ())
 
       case event: MeetupReminderEvent =>

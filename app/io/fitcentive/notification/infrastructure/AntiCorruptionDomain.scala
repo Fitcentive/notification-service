@@ -46,12 +46,13 @@ trait AntiCorruptionDomain {
 
   implicit class ParticipantAddedToMeetupEvent2Domain(event: ParticipantAddedToMeetup) {
     def toDomain: ParticipantAddedToMeetupEvent =
-      ParticipantAddedToMeetupEvent(event.meetupId, event.ownerId, event.participantId)
+      ParticipantAddedToMeetupEvent(event.meetupName, event.meetupId, event.ownerId, event.participantId)
   }
 
   implicit class ParticipantAddedAvailabilityToMeetupEvent2Domain(event: ParticipantAddedAvailabilityToMeetup) {
     def toDomain: ParticipantAddedAvailabilityToMeetupEvent =
       ParticipantAddedAvailabilityToMeetupEvent(
+        event.meetupName,
         event.meetupId,
         event.meetupOwnerId,
         event.participantId,
@@ -61,7 +62,7 @@ trait AntiCorruptionDomain {
 
   implicit class MeetupDecisionEvent2Domain(event: MeetupDecision) {
     def toDomain: MeetupDecisionEvent =
-      MeetupDecisionEvent(event.meetupId, event.meetupOwnerId, event.participantId, event.hasAccepted)
+      MeetupDecisionEvent(event.meetupName, event.meetupId, event.meetupOwnerId, event.participantId, event.hasAccepted)
   }
 
   implicit class MeetupReminderEvent2Domain(event: MeetupReminder) {

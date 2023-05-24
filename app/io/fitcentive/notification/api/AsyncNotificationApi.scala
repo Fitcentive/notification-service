@@ -295,10 +295,20 @@ class AsyncNotificationApi @Inject() (
   }
 
   // Send push notification as well as regular notification
-  def addParticipantAddedToMeetupNotification(meetupId: UUID, meetupOwnerId: UUID, participantId: UUID): Future[Unit] =
+  def addParticipantAddedToMeetupNotification(
+    meetupName: String,
+    meetupId: UUID,
+    meetupOwnerId: UUID,
+    participantId: UUID
+  ): Future[Unit] =
     for {
       _ <- Future.unit
-      data = Json.obj("meetupId" -> meetupId, "meetupOwnerId" -> meetupOwnerId, "participantId" -> participantId)
+      data = Json.obj(
+        "meetupId" -> meetupId,
+        "meetupOwnerId" -> meetupOwnerId,
+        "participantId" -> participantId,
+        "meetupName" -> meetupName,
+      )
       notificationData = NotificationData.Upsert(
         id = UUID.randomUUID(),
         targetUser = participantId,
@@ -312,6 +322,7 @@ class AsyncNotificationApi @Inject() (
       _ <- notificationDataRepository.upsertNotification(notificationData)
       result <- pushNotificationService.sendParticipantAddedToMeetupNotification(
         ParticipantAddedToMeetupMessage(
+          meetupName,
           meetupId,
           meetupOwnerId,
           participantId,
@@ -322,6 +333,7 @@ class AsyncNotificationApi @Inject() (
 
   // Send push notification as well as regular notification
   def addParticipantAddedAvailabilityToMeetupNotification(
+    meetupName: String,
     meetupId: UUID,
     meetupOwnerId: UUID,
     participantId: UUID,
@@ -333,7 +345,8 @@ class AsyncNotificationApi @Inject() (
         "meetupId" -> meetupId,
         "meetupOwnerId" -> meetupOwnerId,
         "participantId" -> participantId,
-        "targetUserId" -> targetUserId
+        "targetUserId" -> targetUserId,
+        "meetupName" -> meetupName,
       )
       notificationData = NotificationData.Upsert(
         id = UUID.randomUUID(),
@@ -348,6 +361,7 @@ class AsyncNotificationApi @Inject() (
       _ <- notificationDataRepository.upsertNotification(notificationData)
       result <- pushNotificationService.sendParticipantAddedAvailabilityToMeetupNotification(
         ParticipantAddedAvailabilityToMeetupMessage(
+          meetupName,
           meetupId,
           meetupOwnerId,
           targetUserId,
@@ -359,6 +373,7 @@ class AsyncNotificationApi @Inject() (
     } yield result
 
   def addMeetupDecisionNotification(
+    meetupName: String,
     meetupId: UUID,
     meetupOwnerId: UUID,
     participantId: UUID,
@@ -370,7 +385,8 @@ class AsyncNotificationApi @Inject() (
           "meetupId" -> meetupId,
           "meetupOwnerId" -> meetupOwnerId,
           "participantId" -> participantId,
-          "hasAccepted" -> hasAccepted
+          "hasAccepted" -> hasAccepted,
+          "meetupName" -> meetupName,
         )
         val notificationData = NotificationData.Upsert(
           id = UUID.randomUUID(),

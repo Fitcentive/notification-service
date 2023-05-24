@@ -8,6 +8,7 @@ import java.util
 import java.util.UUID
 
 case class ParticipantAddedAvailabilityToMeetupMessage(
+  meetupName: String,
   meetupId: UUID,
   meetupOwnerId: UUID,
   targetUserId: UUID,
@@ -18,7 +19,7 @@ case class ParticipantAddedAvailabilityToMeetupMessage(
   val notification: Notification =
     Notification
       .builder()
-      .setTitle(s"$participantName has added their availability!")
+      .setTitle(s"$participantName has added their availability to meetup: $meetupName")
       .setBody("Click here to view more")
       .build()
 
@@ -30,6 +31,7 @@ case class ParticipantAddedAvailabilityToMeetupMessage(
       "participantPhotoUrl" -> participantPhotoUrl,
       "participantName" -> participantName,
       "meetupOwnerId" -> meetupOwnerId.toString,
-      "targetUserId" -> targetUserId.toString
+      "targetUserId" -> targetUserId.toString,
+      "meetupName" -> meetupName,
     ).toMap.asJava
 }
