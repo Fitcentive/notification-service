@@ -401,6 +401,22 @@ class AsyncNotificationApi @Inject() (
       }
     } yield ()
 
+  def addMeetupLocationChangedNotification(meetupId: UUID, meetupName: String, targetUser: UUID): Future[Unit] =
+    for {
+      _ <- Future.unit
+      data = Json.obj("meetupId" -> meetupId, "targetUserId" -> targetUser, "meetupName" -> meetupName)
+      notificationData = NotificationData.Upsert(
+        id = UUID.randomUUID(),
+        targetUser = targetUser,
+        isInteractive = false,
+        hasBeenInteractedWith = false,
+        hasBeenViewed = false,
+        notificationType = NotificationType.MeetupLocationChanged,
+        data = data,
+      )
+      _ <- notificationDataRepository.upsertNotification(notificationData)
+    } yield ()
+
   def meetupReminderNotification(meetupId: UUID, meetupName: String, targetUser: UUID): Future[Unit] =
     for {
       _ <- Future.unit

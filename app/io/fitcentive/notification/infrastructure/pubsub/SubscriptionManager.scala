@@ -7,6 +7,7 @@ import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
 import io.fitcentive.registry.events.meetup.{
   MeetupDecision,
+  MeetupLocationChanged,
   MeetupReminder,
   ParticipantAddedAvailabilityToMeetup,
   ParticipantAddedToMeetup
@@ -44,6 +45,7 @@ class SubscriptionManager(
       _ <- subscribeToUserLikedPostEvent
       _ <- subscribeToMeetupDecisionEvent
       _ <- subscribeToMeetupReminderEvent
+      _ <- subscribeToMeetupLocationChangedEvent
       _ <- subscribeToParticipantAddedToMeetupEvent
       _ <- subscribeToParticipantAvailabilityAddedToMeetupEvent
       _ = logInfo("Subscriptions set up successfully!")
@@ -112,6 +114,14 @@ class SubscriptionManager(
         environment,
         config.subscriptionsConfig.meetupReminderSubscription,
         config.topicsConfig.meetupReminderTopic
+      )(_.payload.toDomain.pipe(handleEvent))
+
+  private def subscribeToMeetupLocationChangedEvent: Future[Unit] =
+    subscriber
+      .subscribe[MeetupLocationChanged](
+        environment,
+        config.subscriptionsConfig.meetupLocationChangedSubscription,
+        config.topicsConfig.meetupLocationChangedTopic
       )(_.payload.toDomain.pipe(handleEvent))
 
   private def subscribeToParticipantAddedToMeetupEvent: Future[Unit] =

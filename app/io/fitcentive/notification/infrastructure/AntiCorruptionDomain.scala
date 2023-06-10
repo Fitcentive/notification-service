@@ -6,6 +6,7 @@ import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFriendReques
 import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
 import io.fitcentive.registry.events.meetup.{
   MeetupDecision,
+  MeetupLocationChanged,
   MeetupReminder,
   ParticipantAddedAvailabilityToMeetup,
   ParticipantAddedToMeetup
@@ -67,6 +68,11 @@ trait AntiCorruptionDomain {
 
   implicit class MeetupReminderEvent2Domain(event: MeetupReminder) {
     def toDomain: MeetupReminderEvent = MeetupReminderEvent(event.meetupId, event.meetupName, event.targetUser)
+  }
+
+  implicit class MeetupLocationChangedEvent2Domain(event: MeetupLocationChanged) {
+    def toDomain: MeetupLocationChangedEvent =
+      MeetupLocationChangedEvent(event.meetupId, event.meetupName, event.targetUser)
   }
 
 }
