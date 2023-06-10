@@ -92,7 +92,7 @@ trait MessageEventHandlers extends EventHandlers {
 
       case event: MeetupLocationChangedEvent =>
         notificationApi
-          .addMeetupLocationChangedNotification(event.meetupId, event.meetupName, event.targetUser)
+          .addMeetupLocationChangedNotification(event.meetupId, event.meetupOwnerId, event.meetupName, event.targetUser)
           .map(_ => ())
 
       case _ =>

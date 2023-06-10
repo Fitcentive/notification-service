@@ -72,7 +72,7 @@ trait AntiCorruptionDomain {
 
   implicit class MeetupLocationChangedEvent2Domain(event: MeetupLocationChanged) {
     def toDomain: MeetupLocationChangedEvent =
-      MeetupLocationChangedEvent(event.meetupId, event.meetupName, event.targetUser)
+      MeetupLocationChangedEvent(event.meetupId, event.meetupOwnerId, event.meetupName, event.targetUser)
   }
 
 }
