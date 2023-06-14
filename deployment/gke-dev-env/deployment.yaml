@@ -6,7 +6,7 @@ metadata:
   labels:
     app: notification-service
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: notification-service
@@ -32,10 +32,10 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              memory: 300Mi
-              cpu: "0.2"
-            limits:
               memory: 500Mi
+              cpu: "0.1"
+            limits:
+              memory: 800Mi
               cpu: "0.5"
           ports:
             - name: http-port
@@ -110,6 +110,8 @@ spec:
               value: "meetup-decision"
             - name: TOPIC_MEETUP_REMINDER
               value: "meetup-reminder"
+            - name: TOPIC_MEETUP_LOCATION_CHANGED
+              value: "meetup-location-changed"
             - name: SUBSCRIPTION_CHAT_ROOM_MESSAGE_SENT
               value: "chat-room-message-sent"
             - name: SUBSCRIPTION_USER_FRIEND_REQUESTED
@@ -128,6 +130,8 @@ spec:
               value: "meetup-decision"
             - name: SUBSCRIPTION_MEETUP_REMINDER
               value: "meetup-reminder"
+            - name: SUBSCRIPTION_MEETUP_LOCATION_CHANGED
+              value: "meetup-location-changed"
             - name: JWT_ISSUER
               value: "https://auth.fitcentive.xyz"
             - name: KEYCLOAK_SERVER_URL
