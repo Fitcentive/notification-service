@@ -21,14 +21,14 @@ spec:
           image: gcr.io/cloudsql-docker/gce-proxy:1.33.1
           command:
             - /cloud_sql_proxy
-            - -instances=fitcentive-dev-02:northamerica-northeast2:gke-dev-env-cloud-sql-instance:=tcp:5432
+            - -instances=fitcentive-dev-03:northamerica-northeast2:gke-dev-env-cloud-sql-instance:=tcp:5432
             - -credential_file=/secrets/cloudsql/credentials.json
           volumeMounts:
             - name: cloudsql-creds
               mountPath: /secrets/cloudsql
               readOnly: true
         - name: notification-service
-          image: gcr.io/fitcentive-dev-02/notification:1.0
+          image: gcr.io/fitcentive-dev-03/notification:1.0
           imagePullPolicy: Always
           resources:
             requests:
@@ -63,7 +63,7 @@ spec:
                 name: firebase-admin-service-account-credentials
           env:
             - name: GCP_PROJECT_NAME
-              value: "fitcentive-dev-02"
+              value: "fitcentive-dev-03"
             - name: DB_HOST
               value: "localhost"
             - name: DB_PORT
