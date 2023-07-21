@@ -77,15 +77,25 @@ spec:
 #            - name: SMTP_PASSWORD
 #              value: ""
             - name: SMTP_HOST
-              value: "in-v3.mailjet.com"
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-credentials
+                  key: smtp_host
             - name: SMTP_PORT
-              value: "587"
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-credentials
+                  key: smtp_port
             - name: SMTP_USER
-              # This value is the API key from mailjet - https://app.mailjet.com/account/relay
-              value: "c97324bd1ac6e563eef5424c278d5d05"
-              # This value is the associated secret with the API key above - https://app.mailjet.com/account/relay
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-credentials
+                  key: smtp_user
             - name: SMTP_PASSWORD
-              value: "e6d38f5fedb15725a7e89db05fd7b32c"
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-credentials
+                  key: smtp_password
             - name: RUNTIME_ENVIRONMENT
               value: "gke-dev-env"
             - name: TOPIC_EMAIL_VERIFICATION_TOKEN_CREATED
