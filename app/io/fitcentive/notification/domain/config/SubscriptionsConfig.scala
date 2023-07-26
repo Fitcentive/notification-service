@@ -15,6 +15,7 @@ case class SubscriptionsConfig(
   meetupLocationChangedSubscription: String,
   participantAddedToMeetupSubscription: String,
   participantAddedAvailabilityToMeetupSubscription: String,
+  flushStaleNotificationsSubscription: String,
 ) extends PubSubSubscriptionConfig {
 
   val subscriptions: Seq[String] = Seq(
@@ -28,7 +29,8 @@ case class SubscriptionsConfig(
     meetupReminderSubscription,
     meetupLocationChangedSubscription,
     participantAddedToMeetupSubscription,
-    participantAddedAvailabilityToMeetupSubscription
+    participantAddedAvailabilityToMeetupSubscription,
+    flushStaleNotificationsSubscription
   )
 }
 
@@ -45,6 +47,7 @@ object SubscriptionsConfig {
       meetupReminderSubscription = config.getString("meetup-reminder"),
       meetupLocationChangedSubscription = config.getString("meetup-location-changed"),
       participantAddedToMeetupSubscription = config.getString("participant-added-to-meetup"),
-      participantAddedAvailabilityToMeetupSubscription = config.getString("participant-added-availability-to-meetup")
+      participantAddedAvailabilityToMeetupSubscription = config.getString("participant-added-availability-to-meetup"),
+      flushStaleNotificationsSubscription = config.getString("flush-stale-notifications"),
     )
 }

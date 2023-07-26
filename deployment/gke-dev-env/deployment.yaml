@@ -122,6 +122,10 @@ spec:
               value: "meetup-reminder"
             - name: TOPIC_MEETUP_LOCATION_CHANGED
               value: "meetup-location-changed"
+            - name: TOPIC_FLUSH_STALE_NOTIFICATIONS
+              value: "flush-stale-notifications"
+            - name: SUBSCRIPTION_FLUSH_STALE_NOTIFICATIONS
+              value: "flush-stale-notifications"
             - name: SUBSCRIPTION_CHAT_ROOM_MESSAGE_SENT
               value: "chat-room-message-sent"
             - name: SUBSCRIPTION_USER_FRIEND_REQUESTED

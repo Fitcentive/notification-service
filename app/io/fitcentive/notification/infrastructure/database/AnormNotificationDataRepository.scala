@@ -21,6 +21,11 @@ class AnormNotificationDataRepository @Inject() (val db: Database)(implicit val 
 
   import AnormNotificationDataRepository._
 
+  override def removeStaleNotificationsForAllUsers(earliestDate: Instant): Future[Unit] =
+    Future {
+      executeSqlWithoutReturning(SQL_REMOVE_STALE_NOTIFICATIONS_OLDER_THAN, Seq("earliestDate" -> earliestDate))
+    }
+
   override def getUnreadNotificationForMeetupDecisionWithType(
     userId: UUID,
     meetupId: UUID,
@@ -194,6 +199,12 @@ object AnormNotificationDataRepository {
     """
       |select * from notification_data
       |where id = {notificationId}::uuid and target_user = {userId}::uuid ;
+      |""".stripMargin
+
+  private val SQL_REMOVE_STALE_NOTIFICATIONS_OLDER_THAN: String =
+    """
+      |delete from notification_data
+      |where updated_at < {earliestDate} ;
       |""".stripMargin
 
   private case class NotificationDataRow(

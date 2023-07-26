@@ -18,6 +18,8 @@ import io.fitcentive.notification.repositories.{NotificationDataRepository, Noti
 import io.fitcentive.sdk.error.{DomainError, EntityNotFoundError}
 import play.api.libs.json.Json
 
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,6 +34,7 @@ class AsyncNotificationApi @Inject() (
   settingsService: SettingsService
 )(implicit ec: ExecutionContext) {
 
+  val maxDaysBeforeNotificationIsStale = 31
   val defaultLimit = 50
   val defaultOffset = 0
 
@@ -433,4 +436,9 @@ class AsyncNotificationApi @Inject() (
       meetupReminderMessage = MeetupReminderMessage(targetUser, meetupId, meetupName)
       result <- pushNotificationService.sendMeetupReminderNotification(meetupReminderMessage)
     } yield result
+
+  def flushStaleNotificationsForAllUsers: Future[Unit] = {
+    val earliestDate = Instant.now().minus(maxDaysBeforeNotificationIsStale, ChronoUnit.DAYS)
+    notificationDataRepository.removeStaleNotificationsForAllUsers(earliestDate)
+  }
 }

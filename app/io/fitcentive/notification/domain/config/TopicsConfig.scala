@@ -15,6 +15,7 @@ case class TopicsConfig(
   meetupLocationChangedTopic: String,
   participantAddedToMeetupTopic: String,
   participantAddedAvailabilityToMeetupTopic: String,
+  flushStaleNotificationsTopic: String,
 ) extends PubSubTopicConfig {
 
   val topics: Seq[String] =
@@ -30,6 +31,7 @@ case class TopicsConfig(
       meetupLocationChangedTopic,
       participantAddedToMeetupTopic,
       participantAddedAvailabilityToMeetupTopic,
+      flushStaleNotificationsTopic,
     )
 
 }
@@ -48,5 +50,6 @@ object TopicsConfig {
       config.getString("meetup-location-changed"),
       config.getString("participant-added-to-meetup"),
       config.getString("participant-added-availability-to-meetup"),
+      config.getString("flush-stale-notifications"),
     )
 }

@@ -4,6 +4,7 @@ import com.google.inject.ImplementedBy
 import io.fitcentive.notification.domain.notification.{NotificationData, NotificationType}
 import io.fitcentive.notification.infrastructure.database.AnormNotificationDataRepository
 
+import java.time.Instant
 import java.util.UUID
 import scala.concurrent.Future
 
@@ -29,4 +30,5 @@ trait NotificationDataRepository {
     meetupId: UUID,
     notificationType: NotificationType
   ): Future[Option[NotificationData]]
+  def removeStaleNotificationsForAllUsers(earliestDate: Instant): Future[Unit]
 }

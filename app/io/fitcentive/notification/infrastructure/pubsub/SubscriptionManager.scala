@@ -1,7 +1,7 @@
 package io.fitcentive.notification.infrastructure.pubsub
 
 import io.fitcentive.notification.domain.config.AppPubSubConfig
-import io.fitcentive.notification.domain.pubsub.events.EventHandlers
+import io.fitcentive.notification.domain.pubsub.events.{EventHandlers, FlushStaleNotificationsEvent}
 import io.fitcentive.notification.infrastructure.AntiCorruptionDomain
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
@@ -48,6 +48,7 @@ class SubscriptionManager(
       _ <- subscribeToMeetupLocationChangedEvent
       _ <- subscribeToParticipantAddedToMeetupEvent
       _ <- subscribeToParticipantAvailabilityAddedToMeetupEvent
+      _ <- subscribeToFlushStaleNotificationsEvent
       _ = logInfo("Subscriptions set up successfully!")
     } yield ()
   }
@@ -139,4 +140,12 @@ class SubscriptionManager(
         config.subscriptionsConfig.participantAddedAvailabilityToMeetupSubscription,
         config.topicsConfig.participantAddedAvailabilityToMeetupTopic
       )(_.payload.toDomain.pipe(handleEvent))
+
+  private def subscribeToFlushStaleNotificationsEvent: Future[Unit] =
+    subscriber
+      .subscribe[FlushStaleNotificationsEvent](
+        environment,
+        config.subscriptionsConfig.flushStaleNotificationsSubscription,
+        config.topicsConfig.flushStaleNotificationsTopic
+      )(_.payload.pipe(handleEvent))
 }
