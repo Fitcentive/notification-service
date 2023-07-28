@@ -51,6 +51,6 @@ object SubscriptionsConfig {
       participantAddedToMeetupSubscription = config.getString("participant-added-to-meetup"),
       participantAddedAvailabilityToMeetupSubscription = config.getString("participant-added-availability-to-meetup"),
       flushStaleNotificationsSubscription = config.getString("flush-stale-notifications"),
-      userAttainedNewAchievementMilestoneSubscription = config.getString("user-attained-new-achievement"),
+      userAttainedNewAchievementMilestoneSubscription = config.getString("user-attained-new-achievement-milestone"),
     )
 }
