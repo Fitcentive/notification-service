@@ -1,6 +1,7 @@
 package io.fitcentive.notification.infrastructure
 
 import io.fitcentive.notification.domain.pubsub.events._
+import io.fitcentive.registry.events.achievements.UserAttainedNewAchievementMilestone
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
 import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFriendRequested}
 import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
@@ -73,6 +74,16 @@ trait AntiCorruptionDomain {
   implicit class MeetupLocationChangedEvent2Domain(event: MeetupLocationChanged) {
     def toDomain: MeetupLocationChangedEvent =
       MeetupLocationChangedEvent(event.meetupId, event.meetupOwnerId, event.meetupName, event.targetUser)
+  }
+
+  implicit class UserAttainedNewAchievementMilestoneEvent2Domain(event: UserAttainedNewAchievementMilestone) {
+    def toDomain: UserAttainedNewAchievementMilestoneEvent =
+      UserAttainedNewAchievementMilestoneEvent(
+        event.userId,
+        event.milestoneName,
+        event.milestoneCategory,
+        event.attainedAtInMillis
+      )
   }
 
 }

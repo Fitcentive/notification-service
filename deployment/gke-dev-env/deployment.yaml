@@ -124,6 +124,10 @@ spec:
               value: "meetup-location-changed"
             - name: TOPIC_FLUSH_STALE_NOTIFICATIONS
               value: "flush-stale-notifications"
+            - name: TOPIC_USER_ATTAINTED_NEW_ACHIEVEMENT_MILESTONE
+              value: "user-attained-new-achievement-milestone"
+            - name: SUBSCRIPTION_USER_ATTAINTED_NEW_ACHIEVEMENT_MILESTONE
+              value: "user-attained-new-achievement-milestone"
             - name: SUBSCRIPTION_FLUSH_STALE_NOTIFICATIONS
               value: "flush-stale-notifications"
             - name: SUBSCRIPTION_CHAT_ROOM_MESSAGE_SENT

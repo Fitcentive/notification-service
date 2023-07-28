@@ -7,6 +7,7 @@ import io.fitcentive.notification.domain.push.messages.{
   MeetupReminderMessage,
   ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
+  UserAttainedNewAchievementMilestoneMessage,
   UserFriendRequestedMessage
 }
 import io.fitcentive.notification.domain.push.{
@@ -32,6 +33,15 @@ class FirebaseCloudMessagingService @Inject() (
   with AppLogger {
 
   private lazy val messaging: FirebaseMessaging = FirebaseMessaging.getInstance(firebaseApp)
+
+  override def sendUserAttainedNewAchievementMilestoneNotification(
+    milestoneMessage: UserAttainedNewAchievementMilestoneMessage
+  ): Future[PushNotificationResponse] =
+    for {
+      deviceList <- notificationDeviceRepository.getDevicesForUser(milestoneMessage.targetUser)
+      deviceMessages = deviceList.map(createUserAttainedNewAchievementMilestone(_, milestoneMessage))
+      devicePushResponses <- Future.sequence(deviceMessages.map(sendDeviceMessage)).map(_.flatten.toList)
+    } yield PushNotificationResponse(milestoneMessage.targetUser, devicePushResponses)
 
   override def sendMeetupReminderNotification(
     meetupReminderMessage: MeetupReminderMessage

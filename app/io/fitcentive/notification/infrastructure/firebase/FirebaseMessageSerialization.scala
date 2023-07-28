@@ -7,12 +7,57 @@ import io.fitcentive.notification.domain.push.messages.{
   MeetupReminderMessage,
   ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
+  UserAttainedNewAchievementMilestoneMessage,
   UserFriendRequestedMessage
 }
 
 trait FirebaseMessageSerialization {
   private val notificationSound = "notification1.mp3"
   private val appBasicTheme = "#009688"
+
+  def createUserAttainedNewAchievementMilestone(
+    device: NotificationDevice,
+    milestoneMessage: UserAttainedNewAchievementMilestoneMessage
+  ): PushNotificationMessage = {
+    val msg = Message
+      .builder()
+      .setAndroidConfig(
+        AndroidConfig
+          .builder()
+          .setNotification(
+            AndroidNotification
+              .builder()
+              .setSound(notificationSound)
+              .setColor(appBasicTheme)
+              .setIcon("app_icon")
+              .build()
+          )
+          .build()
+      )
+      .setApnsConfig(
+        ApnsConfig
+          .builder()
+          .setAps(
+            Aps
+              .builder()
+              .setSound(notificationSound)
+              .setMutableContent(true)
+              .build()
+          )
+          .setFcmOptions(
+            ApnsFcmOptions
+              .builder()
+              .build()
+          )
+          .build()
+      )
+      .setNotification(milestoneMessage.notification)
+      .putAllData(milestoneMessage.toJavaMap)
+      .setToken(device.registrationToken)
+      .build()
+
+    PushNotificationMessage(device.registrationToken, msg)
+  }
 
   def createMeetupReminder(
     device: NotificationDevice,

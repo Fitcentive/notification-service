@@ -4,6 +4,7 @@ import io.fitcentive.notification.domain.config.AppPubSubConfig
 import io.fitcentive.notification.domain.pubsub.events.{EventHandlers, FlushStaleNotificationsEvent}
 import io.fitcentive.notification.infrastructure.AntiCorruptionDomain
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
+import io.fitcentive.registry.events.achievements.UserAttainedNewAchievementMilestone
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
 import io.fitcentive.registry.events.meetup.{
   MeetupDecision,
@@ -49,9 +50,18 @@ class SubscriptionManager(
       _ <- subscribeToParticipantAddedToMeetupEvent
       _ <- subscribeToParticipantAvailabilityAddedToMeetupEvent
       _ <- subscribeToFlushStaleNotificationsEvent
+      _ <- subscribeToUserAttainedNewAchievementMilestoneEvent
       _ = logInfo("Subscriptions set up successfully!")
     } yield ()
   }
+
+  private def subscribeToUserAttainedNewAchievementMilestoneEvent: Future[Unit] =
+    subscriber
+      .subscribe[UserAttainedNewAchievementMilestone](
+        environment,
+        config.subscriptionsConfig.userAttainedNewAchievementMilestoneSubscription,
+        config.topicsConfig.userAttainedNewAchievementMilestoneTopic
+      )(_.payload.toDomain.pipe(handleEvent))
 
   private def subscribeToEmailVerificationTokenCreatedEvent: Future[Unit] =
     subscriber

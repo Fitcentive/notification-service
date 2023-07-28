@@ -17,6 +17,7 @@ object NotificationType {
       case ParticipantAddedToMeetup.stringValue             => ParticipantAddedToMeetup
       case ParticipantAddedAvailabilityToMeetup.stringValue => ParticipantAddedAvailabilityToMeetup
       case MeetupLocationChanged.stringValue                => MeetupLocationChanged
+      case UserAttainedNewAchievementMilestone.stringValue  => UserAttainedNewAchievementMilestone
       case _                                                => throw new Exception("Unexpected notification type")
     }
 
@@ -29,6 +30,7 @@ object NotificationType {
       case ParticipantAddedToMeetup             => JsString(ParticipantAddedToMeetup.stringValue)
       case ParticipantAddedAvailabilityToMeetup => JsString(ParticipantAddedAvailabilityToMeetup.stringValue)
       case MeetupLocationChanged                => JsString(MeetupLocationChanged.stringValue)
+      case UserAttainedNewAchievementMilestone  => JsString(UserAttainedNewAchievementMilestone.stringValue)
     }
   }
 
@@ -58,6 +60,10 @@ object NotificationType {
 
   case object MeetupLocationChanged extends NotificationType {
     val stringValue: String = "MeetupLocationChanged"
+  }
+
+  case object UserAttainedNewAchievementMilestone extends NotificationType {
+    val stringValue: String = "UserAttainedNewAchievementMilestone"
   }
 
 }

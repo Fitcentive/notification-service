@@ -2,22 +2,7 @@ package io.fitcentive.notification.infrastructure.handlers
 
 import io.fitcentive.notification.api.AsyncNotificationApi
 import io.fitcentive.notification.domain.errors.EmailError
-import io.fitcentive.notification.domain.pubsub.events.{
-  ChatRoomMessageSentEvent,
-  EmailVerificationTokenCreatedEvent,
-  EventHandlers,
-  EventMessage,
-  FlushStaleNotificationsEvent,
-  MeetupDecisionEvent,
-  MeetupLocationChangedEvent,
-  MeetupReminderEvent,
-  ParticipantAddedAvailabilityToMeetupEvent,
-  ParticipantAddedToMeetupEvent,
-  UserCommentedOnPostEvent,
-  UserFriendRequestDecisionEvent,
-  UserFriendRequestedEvent,
-  UserLikedPostEvent
-}
+import io.fitcentive.notification.domain.pubsub.events._
 import io.fitcentive.sdk.error.DomainError
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -98,6 +83,16 @@ trait MessageEventHandlers extends EventHandlers {
 
       case event: FlushStaleNotificationsEvent =>
         notificationApi.flushStaleNotificationsForAllUsers
+          .map(_ => ())
+
+      case event: UserAttainedNewAchievementMilestoneEvent =>
+        notificationApi
+          .handleUserAttainedNewAchievementMilestoneEvent(
+            event.userId,
+            event.milestoneName,
+            event.milestoneCategory,
+            event.attainedAtInMillis
+          )
           .map(_ => ())
 
       case _ =>

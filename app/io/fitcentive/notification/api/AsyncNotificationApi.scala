@@ -11,6 +11,7 @@ import io.fitcentive.notification.domain.push.messages.{
   MeetupReminderMessage,
   ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
+  UserAttainedNewAchievementMilestoneMessage,
   UserFriendRequestedMessage
 }
 import io.fitcentive.notification.services.{EmailService, PushNotificationService, SettingsService, UserService}
@@ -436,6 +437,40 @@ class AsyncNotificationApi @Inject() (
       meetupReminderMessage = MeetupReminderMessage(targetUser, meetupId, meetupName)
       result <- pushNotificationService.sendMeetupReminderNotification(meetupReminderMessage)
     } yield result
+
+  def handleUserAttainedNewAchievementMilestoneEvent(
+    userId: UUID,
+    milestoneName: String,
+    milestoneCategory: String,
+    attainedAtInMillis: Long,
+  ): Future[Unit] = {
+    for {
+      _ <- Future.unit
+      data = Json.obj(
+        "userId" -> userId,
+        "milestoneName" -> milestoneName,
+        "milestoneCategory" -> milestoneCategory,
+        "attainedAtInMillis" -> attainedAtInMillis,
+      )
+      notificationData = NotificationData.Upsert(
+        id = UUID.randomUUID(),
+        targetUser = userId,
+        isInteractive = false,
+        hasBeenInteractedWith = false,
+        hasBeenViewed = false,
+        notificationType = NotificationType.UserAttainedNewAchievementMilestone,
+        data = data,
+      )
+      _ <- notificationDataRepository.upsertNotification(notificationData)
+      result <- pushNotificationService.sendUserAttainedNewAchievementMilestoneNotification(
+        UserAttainedNewAchievementMilestoneMessage(
+          targetUser = userId,
+          milestoneName = milestoneName,
+          milestoneCategory = milestoneCategory
+        )
+      )
+    } yield result
+  }
 
   def flushStaleNotificationsForAllUsers: Future[Unit] = {
     val earliestDate = Instant.now().minus(maxDaysBeforeNotificationIsStale, ChronoUnit.DAYS)
