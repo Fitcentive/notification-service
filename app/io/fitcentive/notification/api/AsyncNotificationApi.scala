@@ -11,6 +11,7 @@ import io.fitcentive.notification.domain.push.messages.{
   MeetupReminderMessage,
   ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
+  PromptToLogWeightMessage,
   UserAttainedNewAchievementMilestoneMessage,
   UserFriendRequestedMessage
 }
@@ -476,4 +477,11 @@ class AsyncNotificationApi @Inject() (
     val earliestDate = Instant.now().minus(maxDaysBeforeNotificationIsStale, ChronoUnit.DAYS)
     notificationDataRepository.removeStaleNotificationsForAllUsers(earliestDate)
   }
+
+  def sendPushNotificationToUsersToPromptWeightEntry(targetUser: UUID): Future[Unit] =
+    for {
+      _ <- Future.unit
+      message = PromptToLogWeightMessage(targetUser)
+      result <- pushNotificationService.sendWeightLogReminderNotification(message)
+    } yield result
 }

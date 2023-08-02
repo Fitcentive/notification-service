@@ -17,6 +17,7 @@ case class TopicsConfig(
   participantAddedAvailabilityToMeetupTopic: String,
   flushStaleNotificationsTopic: String,
   userAttainedNewAchievementMilestoneTopic: String,
+  promptUserToLogWeightTopic: String,
 ) extends PubSubTopicConfig {
 
   val topics: Seq[String] =
@@ -34,6 +35,7 @@ case class TopicsConfig(
       participantAddedAvailabilityToMeetupTopic,
       flushStaleNotificationsTopic,
       userAttainedNewAchievementMilestoneTopic,
+      promptUserToLogWeightTopic,
     )
 
 }
@@ -54,5 +56,6 @@ object TopicsConfig {
       config.getString("participant-added-availability-to-meetup"),
       config.getString("flush-stale-notifications"),
       config.getString("user-attained-new-achievement-milestone"),
+      config.getString("prompt-user-to-log-weight"),
     )
 }

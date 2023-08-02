@@ -7,6 +7,7 @@ import io.fitcentive.notification.domain.push.messages.{
   MeetupReminderMessage,
   ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
+  PromptToLogWeightMessage,
   UserAttainedNewAchievementMilestoneMessage,
   UserFriendRequestedMessage
 }
@@ -42,6 +43,13 @@ class FirebaseCloudMessagingService @Inject() (
       deviceMessages = deviceList.map(createUserAttainedNewAchievementMilestone(_, milestoneMessage))
       devicePushResponses <- Future.sequence(deviceMessages.map(sendDeviceMessage)).map(_.flatten.toList)
     } yield PushNotificationResponse(milestoneMessage.targetUser, devicePushResponses)
+
+  override def sendWeightLogReminderNotification(message: PromptToLogWeightMessage): Future[PushNotificationResponse] =
+    for {
+      deviceList <- notificationDeviceRepository.getDevicesForUser(message.targetUser)
+      deviceMessages = deviceList.map(createWeightLogReminder(_, message))
+      devicePushResponses <- Future.sequence(deviceMessages.map(sendDeviceMessage)).map(_.flatten.toList)
+    } yield PushNotificationResponse(message.targetUser, devicePushResponses)
 
   override def sendMeetupReminderNotification(
     meetupReminderMessage: MeetupReminderMessage

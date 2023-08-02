@@ -16,7 +16,7 @@ libraryDependencies ++= Seq(
   ws,
   evolutions,
   // Firebase admin SDK
-  "com.google.firebase" % "firebase-admin" % "9.0.0",
+  "com.google.firebase" % "firebase-admin" % "9.2.0",
   // Anorm
   "org.playframework.anorm" %% "anorm"          % "2.6.10",
   "org.playframework.anorm" %% "anorm-postgres" % "2.6.10",

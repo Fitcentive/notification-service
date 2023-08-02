@@ -1,7 +1,11 @@
 package io.fitcentive.notification.infrastructure.pubsub
 
 import io.fitcentive.notification.domain.config.AppPubSubConfig
-import io.fitcentive.notification.domain.pubsub.events.{EventHandlers, FlushStaleNotificationsEvent}
+import io.fitcentive.notification.domain.pubsub.events.{
+  EventHandlers,
+  FlushStaleNotificationsEvent,
+  PromptUserWeightEntryEvent
+}
 import io.fitcentive.notification.infrastructure.AntiCorruptionDomain
 import io.fitcentive.notification.infrastructure.contexts.PubSubExecutionContext
 import io.fitcentive.registry.events.achievements.UserAttainedNewAchievementMilestone
@@ -13,7 +17,7 @@ import io.fitcentive.registry.events.meetup.{
   ParticipantAddedAvailabilityToMeetup,
   ParticipantAddedToMeetup
 }
-import io.fitcentive.registry.events.push.{ChatRoomMessageSent, UserFriendRequested}
+import io.fitcentive.registry.events.push.{ChatRoomMessageSent, PromptUserToLogWeight, UserFriendRequested}
 import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
 import io.fitcentive.registry.events.user.UserFriendRequestDecision
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
@@ -51,9 +55,18 @@ class SubscriptionManager(
       _ <- subscribeToParticipantAvailabilityAddedToMeetupEvent
       _ <- subscribeToFlushStaleNotificationsEvent
       _ <- subscribeToUserAttainedNewAchievementMilestoneEvent
+      _ <- subscribeToPromptUserWeightEntryEvent
       _ = logInfo("Subscriptions set up successfully!")
     } yield ()
   }
+
+  private def subscribeToPromptUserWeightEntryEvent: Future[Unit] =
+    subscriber
+      .subscribe[PromptUserToLogWeight](
+        environment,
+        config.subscriptionsConfig.promptUserToLogWeightSubscription,
+        config.topicsConfig.promptUserToLogWeightTopic
+      )(_.payload.toDomain.pipe(handleEvent))
 
   private def subscribeToUserAttainedNewAchievementMilestoneEvent: Future[Unit] =
     subscriber

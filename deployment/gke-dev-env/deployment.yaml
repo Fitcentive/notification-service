@@ -126,6 +126,8 @@ spec:
               value: "flush-stale-notifications"
             - name: TOPIC_USER_ATTAINTED_NEW_ACHIEVEMENT_MILESTONE
               value: "user-attained-new-achievement-milestone"
+            - name: TOPIC_PROMPT_USER_TO_LOG_WEIGHT
+              value: "prompt-user-to-log-weight"
             - name: SUBSCRIPTION_USER_ATTAINTED_NEW_ACHIEVEMENT_MILESTONE
               value: "user-attained-new-achievement-milestone"
             - name: SUBSCRIPTION_FLUSH_STALE_NOTIFICATIONS
@@ -150,6 +152,8 @@ spec:
               value: "meetup-reminder"
             - name: SUBSCRIPTION_MEETUP_LOCATION_CHANGED
               value: "meetup-location-changed"
+            - name: SUBSCRIPTION_PROMPT_USER_TO_LOG_WEIGHT
+              value: "prompt-user-to-log-weight"
             - name: JWT_ISSUER
               value: "https://auth.fitcentive.xyz"
             - name: KEYCLOAK_SERVER_URL
