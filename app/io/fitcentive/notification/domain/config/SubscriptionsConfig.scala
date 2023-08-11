@@ -18,6 +18,7 @@ case class SubscriptionsConfig(
   flushStaleNotificationsSubscription: String,
   userAttainedNewAchievementMilestoneSubscription: String,
   promptUserToLogWeightSubscription: String,
+  promptUserToLogDiaryEntrySubscription: String,
 ) extends PubSubSubscriptionConfig {
 
   val subscriptions: Seq[String] = Seq(
@@ -34,7 +35,8 @@ case class SubscriptionsConfig(
     participantAddedAvailabilityToMeetupSubscription,
     flushStaleNotificationsSubscription,
     userAttainedNewAchievementMilestoneSubscription,
-    promptUserToLogWeightSubscription
+    promptUserToLogWeightSubscription,
+    promptUserToLogDiaryEntrySubscription
   )
 }
 
@@ -55,5 +57,6 @@ object SubscriptionsConfig {
       flushStaleNotificationsSubscription = config.getString("flush-stale-notifications"),
       userAttainedNewAchievementMilestoneSubscription = config.getString("user-attained-new-achievement-milestone"),
       promptUserToLogWeightSubscription = config.getString("prompt-user-to-log-weight"),
+      promptUserToLogDiaryEntrySubscription = config.getString("prompt-user-to-log-diary-entry"),
     )
 }

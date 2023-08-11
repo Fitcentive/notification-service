@@ -90,6 +90,11 @@ trait MessageEventHandlers extends EventHandlers {
           .sendPushNotificationToUsersToPromptWeightEntry(event.targetUser)
           .map(_ => ())
 
+      case event: PromptUserToLogDiaryEntryEvent =>
+        notificationApi
+          .sendPushNotificationToUsersToPromptDiaryEntry(event.targetUser)
+          .map(_ => ())
+
       case event: UserAttainedNewAchievementMilestoneEvent =>
         notificationApi
           .handleUserAttainedNewAchievementMilestoneEvent(

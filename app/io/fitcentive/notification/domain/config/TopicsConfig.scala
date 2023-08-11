@@ -18,6 +18,7 @@ case class TopicsConfig(
   flushStaleNotificationsTopic: String,
   userAttainedNewAchievementMilestoneTopic: String,
   promptUserToLogWeightTopic: String,
+  promptUserToLogDiaryEntryTopic: String,
 ) extends PubSubTopicConfig {
 
   val topics: Seq[String] =
@@ -36,6 +37,7 @@ case class TopicsConfig(
       flushStaleNotificationsTopic,
       userAttainedNewAchievementMilestoneTopic,
       promptUserToLogWeightTopic,
+      promptUserToLogDiaryEntryTopic,
     )
 
 }
@@ -57,5 +59,6 @@ object TopicsConfig {
       config.getString("flush-stale-notifications"),
       config.getString("user-attained-new-achievement-milestone"),
       config.getString("prompt-user-to-log-weight"),
+      config.getString("prompt-user-to-log-diary-entry"),
     )
 }

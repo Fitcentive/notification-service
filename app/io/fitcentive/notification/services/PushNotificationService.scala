@@ -6,6 +6,7 @@ import io.fitcentive.notification.domain.push.messages.{
   MeetupReminderMessage,
   ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
+  PromptToLogDiaryEntryMessage,
   PromptToLogWeightMessage,
   UserAttainedNewAchievementMilestoneMessage,
   UserFriendRequestedMessage
@@ -27,6 +28,7 @@ trait PushNotificationService {
   def sendChatRoomMessageSentNotification(chatMessage: ChatRoomMessageSentMessage): Future[PushNotificationResponse]
   def sendMeetupReminderNotification(chatMessage: MeetupReminderMessage): Future[PushNotificationResponse]
   def sendWeightLogReminderNotification(message: PromptToLogWeightMessage): Future[PushNotificationResponse]
+  def sendDiaryEntryLogReminderNotification(message: PromptToLogDiaryEntryMessage): Future[PushNotificationResponse]
   def sendUserAttainedNewAchievementMilestoneNotification(
     milestoneMessage: UserAttainedNewAchievementMilestoneMessage
   ): Future[PushNotificationResponse]

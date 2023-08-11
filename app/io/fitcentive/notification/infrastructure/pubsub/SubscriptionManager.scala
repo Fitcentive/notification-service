@@ -17,7 +17,12 @@ import io.fitcentive.registry.events.meetup.{
   ParticipantAddedAvailabilityToMeetup,
   ParticipantAddedToMeetup
 }
-import io.fitcentive.registry.events.push.{ChatRoomMessageSent, PromptUserToLogWeight, UserFriendRequested}
+import io.fitcentive.registry.events.push.{
+  ChatRoomMessageSent,
+  PromptUserToLogDiaryEntry,
+  PromptUserToLogWeight,
+  UserFriendRequested
+}
 import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
 import io.fitcentive.registry.events.user.UserFriendRequestDecision
 import io.fitcentive.sdk.gcp.pubsub.{PubSubPublisher, PubSubSubscriber}
@@ -56,9 +61,18 @@ class SubscriptionManager(
       _ <- subscribeToFlushStaleNotificationsEvent
       _ <- subscribeToUserAttainedNewAchievementMilestoneEvent
       _ <- subscribeToPromptUserWeightEntryEvent
+      _ <- subscribeToPromptUserDiaryEntryEvent
       _ = logInfo("Subscriptions set up successfully!")
     } yield ()
   }
+
+  private def subscribeToPromptUserDiaryEntryEvent: Future[Unit] =
+    subscriber
+      .subscribe[PromptUserToLogDiaryEntry](
+        environment,
+        config.subscriptionsConfig.promptUserToLogDiaryEntrySubscription,
+        config.topicsConfig.promptUserToLogDiaryEntryTopic
+      )(_.payload.toDomain.pipe(handleEvent))
 
   private def subscribeToPromptUserWeightEntryEvent: Future[Unit] =
     subscriber

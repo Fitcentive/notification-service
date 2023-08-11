@@ -3,7 +3,12 @@ package io.fitcentive.notification.infrastructure
 import io.fitcentive.notification.domain.pubsub.events._
 import io.fitcentive.registry.events.achievements.UserAttainedNewAchievementMilestone
 import io.fitcentive.registry.events.email.EmailVerificationTokenCreated
-import io.fitcentive.registry.events.push.{ChatRoomMessageSent, PromptUserToLogWeight, UserFriendRequested}
+import io.fitcentive.registry.events.push.{
+  ChatRoomMessageSent,
+  PromptUserToLogDiaryEntry,
+  PromptUserToLogWeight,
+  UserFriendRequested
+}
 import io.fitcentive.registry.events.social.{UserCommentedOnPost, UserLikedPost}
 import io.fitcentive.registry.events.meetup.{
   MeetupDecision,
@@ -89,6 +94,11 @@ trait AntiCorruptionDomain {
   implicit class PromptUserToLogWeightEvent2Domain(event: PromptUserToLogWeight) {
     def toDomain: PromptUserToLogWeightEvent =
       PromptUserToLogWeightEvent(event.targetUser)
+  }
+
+  implicit class PromptUserToLogDiaryEntryEvent2Domain(event: PromptUserToLogDiaryEntry) {
+    def toDomain: PromptUserToLogDiaryEntryEvent =
+      PromptUserToLogDiaryEntryEvent(event.targetUser)
   }
 
 }

@@ -11,6 +11,7 @@ import io.fitcentive.notification.domain.push.messages.{
   MeetupReminderMessage,
   ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
+  PromptToLogDiaryEntryMessage,
   PromptToLogWeightMessage,
   UserAttainedNewAchievementMilestoneMessage,
   UserFriendRequestedMessage
@@ -483,5 +484,12 @@ class AsyncNotificationApi @Inject() (
       _ <- Future.unit
       message = PromptToLogWeightMessage(targetUser)
       result <- pushNotificationService.sendWeightLogReminderNotification(message)
+    } yield result
+
+  def sendPushNotificationToUsersToPromptDiaryEntry(targetUser: UUID): Future[Unit] =
+    for {
+      _ <- Future.unit
+      message = PromptToLogDiaryEntryMessage(targetUser)
+      result <- pushNotificationService.sendDiaryEntryLogReminderNotification(message)
     } yield result
 }

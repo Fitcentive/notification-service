@@ -7,6 +7,7 @@ import io.fitcentive.notification.domain.push.messages.{
   MeetupReminderMessage,
   ParticipantAddedAvailabilityToMeetupMessage,
   ParticipantAddedToMeetupMessage,
+  PromptToLogDiaryEntryMessage,
   PromptToLogWeightMessage,
   UserAttainedNewAchievementMilestoneMessage,
   UserFriendRequestedMessage
@@ -98,6 +99,50 @@ trait FirebaseMessageSerialization {
       )
       .setNotification(meetupReminderMessage.notification)
       .putAllData(meetupReminderMessage.toJavaMap)
+      .setToken(device.registrationToken)
+      .build()
+
+    PushNotificationMessage(device.registrationToken, msg)
+  }
+
+  def createDiaryEntryLogReminder(
+    device: NotificationDevice,
+    message: PromptToLogDiaryEntryMessage
+  ): PushNotificationMessage = {
+    val msg = Message
+      .builder()
+      .setAndroidConfig(
+        AndroidConfig
+          .builder()
+          .setNotification(
+            AndroidNotification
+              .builder()
+              .setSound(notificationSound)
+              .setColor(appBasicTheme)
+              .setIcon("app_icon")
+              .build()
+          )
+          .build()
+      )
+      .setApnsConfig(
+        ApnsConfig
+          .builder()
+          .setAps(
+            Aps
+              .builder()
+              .setSound(notificationSound)
+              .setMutableContent(true)
+              .build()
+          )
+          .setFcmOptions(
+            ApnsFcmOptions
+              .builder()
+              .build()
+          )
+          .build()
+      )
+      .setNotification(message.notification)
+      .putAllData(message.toJavaMap)
       .setToken(device.registrationToken)
       .build()
 
