@@ -12,7 +12,7 @@ case class PromptToLogWeightMessage(targetUser: UUID) extends PushNotificationEv
   val notification: Notification =
     Notification
       .builder()
-      .setTitle(s"Fancy logging your weight for today?")
+      .setTitle(s"You have not logged your weight for today")
       .setBody("Tap here to do so!")
       .build()
 
